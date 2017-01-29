@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">图书管理系统V1.0</string>
+    <string name="profile">PROFILE</string>
+    <string name="feed">FEED</string>
+    <string name="activity">ACTIVITY</string>
+    <string name="settings">SETTINGS</string>
+
+    <string-array name="tab_names">
+        <item>T1图书馆</item>
+        <item>T2图书馆</item>
+        <item>T3图书馆</item>
+        <item>T4图书馆</item>
+        <item>T5图书馆</item>
+    </string-array>
+</resources>
