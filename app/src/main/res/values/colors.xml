@@ -27,4 +27,9 @@
     <color name="progress">#0294f0</color>
     <color name="menu_bg_normal">#f0f1f3</color>
     <color name="menu_bg_press">#cecece</color>
+
+    <color name="saffron">#F4B63E</color>
+    <color name="eggplant">#663D4E</color>
+    <color name="sienna">#EB6460</color>
+
 </resources>

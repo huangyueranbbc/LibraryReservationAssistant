@@ -15,14 +15,16 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
 
     private final static int HORIZONTAL = 0;
     private final static int TWO_WAY = 1;
+    FragmentManager mFragmentManager;
 
     public MainPagerAdapter(final FragmentManager fm) {
         super(fm);
+        this.mFragmentManager = fm;
     }
 
     @Override
     public Fragment getItem(final int position) {
-        return new TwoWayPagerFragment();
+        return new TwoWayPagerFragment(mFragmentManager);
     }
 
     @Override

@@ -11,4 +11,7 @@
 
     <dimen name="guillotine_item_text_size">20sp</dimen>
     <dimen name="guillotine_actionbar_background_view_height">35dp</dimen>
+
+    <!-- listview -->
+    <dimen name="list_item_height">222dp</dimen>
 </resources>

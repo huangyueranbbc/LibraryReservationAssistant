@@ -55,4 +55,8 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'org.jetbrains:annotations-java5:15.0'
     compile project(':infinitecycleviewpager')
+    // listview
+    compile 'com.labo.kaji:swipeawaydialog:0.1.1'
+    compile 'com.android.support:design:23.3.0'
+    compile project(':phoenixlibrary')
 }

@@ -42,7 +42,7 @@ public class LibraryInfoVerticalPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return TWO_WAY_LIBRARIES.length;
+        return TWO_WAY_LIBRARIES.length * 2;
     }
 
     @Override
@@ -52,19 +52,41 @@ public class LibraryInfoVerticalPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(final ViewGroup container, final int position) {
-        final View view = mLayoutInflater.inflate(R.layout.item, container, false);
-        LinearLayout llItem = (LinearLayout) view.findViewById(R.id.ll_item);
-        llItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 每个item被点击 触发事件
-                Toast.makeText(UIUtils.getContext(), "当前" + TWO_WAY_LIBRARIES[position] + position + "被点击了", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Utils.setupItem(view, TWO_WAY_LIBRARIES[position]);
+        if (position < TWO_WAY_LIBRARIES.length) {
+            final View view = mLayoutInflater.inflate(R.layout.item, container, false);
 
-        container.addView(view);
-        return view;
+            // TODO 点击事件监听
+            LinearLayout llItem = (LinearLayout) view.findViewById(R.id.ll_item);
+            llItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 每个item被点击 触发事件
+                    Toast.makeText(UIUtils.getContext(), "当前" + TWO_WAY_LIBRARIES[position] + position + "被点击了", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            Utils.setupItem(view, TWO_WAY_LIBRARIES[position]);
+
+            container.addView(view);
+            return view;
+        } else {
+            final View view = mLayoutInflater.inflate(R.layout.item, container, false);
+
+            // TODO 点击事件监听
+            LinearLayout llItem = (LinearLayout) view.findViewById(R.id.ll_item);
+            llItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 每个item被点击 触发事件
+                    Toast.makeText(UIUtils.getContext(), "当前" + TWO_WAY_LIBRARIES[position - TWO_WAY_LIBRARIES.length] + "======" + position + "被点击了", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            Utils.setupItem(view, TWO_WAY_LIBRARIES[position - TWO_WAY_LIBRARIES.length]);
+
+            container.addView(view);
+            return view;
+        }
     }
 
     @Override

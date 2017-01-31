@@ -3,6 +3,7 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.scree
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,12 @@ import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.ada
  */
 public class TwoWayPagerFragment extends Fragment {
 
+    FragmentManager mFragmentManager;
+
+    public TwoWayPagerFragment(FragmentManager fragmentManager) {
+        this.mFragmentManager = fragmentManager;
+    }
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
@@ -29,7 +36,7 @@ public class TwoWayPagerFragment extends Fragment {
 
         final HorizontalInfiniteCycleViewPager horizontalInfiniteCycleViewPager =
                 (HorizontalInfiniteCycleViewPager) view.findViewById(R.id.hicvp);
-        horizontalInfiniteCycleViewPager.setAdapter(new HorizontalPagerAdapter(getContext(), true));
+        horizontalInfiniteCycleViewPager.setAdapter(new HorizontalPagerAdapter(getContext(), true, mFragmentManager));
 //
 //        horizontalInfiniteCycleViewPager.setScrollDuration(500);
 //        horizontalInfiniteCycleViewPager.setInterpolator(null);

@@ -1,5 +1,7 @@
 package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.activity;
 
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +12,9 @@ import android.widget.FrameLayout;
 
 import com.yalantis.guillotine.animation.GuillotineAnimation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -31,9 +35,9 @@ public class MainActivity extends BaseActivity {
 
     int mCurrentPosition = 0; // 当前指示器坐标
 
-    Controller controller;
-
     Map<Integer, Integer> mFragmentMap = new HashMap<Integer, Integer>();
+
+    Controller controller;
 
     //  ========== 侧滑菜单
     private static final long RIPPLE_DURATION = 250;
@@ -49,6 +53,17 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // 添加权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            List<String> permissions = new ArrayList<String>();
+
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (!permissions.isEmpty()) {
+                requestPermissions(permissions.toArray(new String[permissions.size()]), 1);
+            }
+        }
         //=== 设置菜单 ===
         ButterKnife.bind(this);
         if (toolbar != null) {
