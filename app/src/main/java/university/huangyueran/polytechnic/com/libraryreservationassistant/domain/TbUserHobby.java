@@ -20,6 +20,6 @@ public class TbUserHobby implements Serializable {
     }
 
     public void setUserHobby(String userHobby) {
-        this.userHobby = userHobby;
+        this.userHobby = userHobby == null ? null : userHobby.trim();
     }
 }

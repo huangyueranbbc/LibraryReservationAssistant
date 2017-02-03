@@ -37,7 +37,7 @@ public class TbIllegal implements Serializable {
     }
 
     public void setNickname(String nickname) {
-        this.nickname = nickname;
+        this.nickname = nickname == null ? null : nickname.trim();
     }
 
     public Date getIllegalTime() {
@@ -53,7 +53,7 @@ public class TbIllegal implements Serializable {
     }
 
     public void setIllegalInfo(String illegalInfo) {
-        this.illegalInfo = illegalInfo;
+        this.illegalInfo = illegalInfo == null ? null : illegalInfo.trim();
     }
 
     public Date getCreated() {

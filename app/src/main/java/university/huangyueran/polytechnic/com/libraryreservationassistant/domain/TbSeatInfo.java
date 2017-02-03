@@ -20,6 +20,6 @@ public class TbSeatInfo implements Serializable {
     }
 
     public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
+        this.qrCode = qrCode == null ? null : qrCode.trim();
     }
 }

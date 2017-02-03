@@ -3,7 +3,7 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.domai
 import java.io.Serializable;
 import java.util.Date;
 
-public class TbFileFavorite  implements Serializable {
+public class TbFileFavorite implements Serializable {
     private Long userId;
 
     private Long fileShareId;

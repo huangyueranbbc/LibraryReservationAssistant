@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +104,6 @@ public class HorizontalPagerAdapter extends PagerAdapter {
                         // 获取图书馆数据
                         // 取缓存
                         String cache = CacheUtils.getCache("library-list" + schoole_id);
-                        Log.i(TAG, "cache: " + cache);
                         if (!StringUtils.isEmpty(cache)) {
                             Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                             libraries = gson.fromJson(cache, new TypeToken<List<TbLibrary>>() {

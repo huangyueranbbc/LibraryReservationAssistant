@@ -25,7 +25,7 @@ public class TbHobby implements Serializable {
     }
 
     public void setHobbyId(String hobbyId) {
-        this.hobbyId = hobbyId;
+        this.hobbyId = hobbyId == null ? null : hobbyId.trim();
     }
 
     public String getHobbyName() {
@@ -33,7 +33,7 @@ public class TbHobby implements Serializable {
     }
 
     public void setHobbyName(String hobbyName) {
-        this.hobbyName = hobbyName;
+        this.hobbyName = hobbyName == null ? null : hobbyName.trim();
     }
 
     public String getHobbyDesc() {
@@ -41,7 +41,7 @@ public class TbHobby implements Serializable {
     }
 
     public void setHobbyDesc(String hobbyDesc) {
-        this.hobbyDesc = hobbyDesc;
+        this.hobbyDesc = hobbyDesc == null ? null : hobbyDesc.trim();
     }
 
     public Long getTopicCount() {
@@ -65,7 +65,7 @@ public class TbHobby implements Serializable {
     }
 
     public void setHobbyToken(String hobbyToken) {
-        this.hobbyToken = hobbyToken;
+        this.hobbyToken = hobbyToken == null ? null : hobbyToken.trim();
     }
 
     public Integer getIsdel() {

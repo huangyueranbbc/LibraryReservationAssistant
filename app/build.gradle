@@ -14,6 +14,24 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+
+        // Move the tests to tests/java, tests/res, etc...
+        instrumentTest.setRoot('tests')
+
+        // Move the build types to build-types/<type>
+        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
+        // This moves them out of them default location under src/<type>/... which would
+        // conflict with src/ being used by the main source set.
+        // Adding new build types or product flavors should be accompanied
+        // by a similar customization.
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
     defaultConfig {
         applicationId "university.huangyueran.polytechnic.com.libraryreservationassistant"
         minSdkVersion 15
@@ -59,4 +77,16 @@ dependencies {
     compile 'com.labo.kaji:swipeawaydialog:0.1.1'
     compile 'com.android.support:design:23.3.0'
     compile project(':phoenixlibrary')
+    // button
+    compile 'com.github.rubensousa:raiflatbutton:0.1'
+    compile files('libs/jackson-annotations-2.4.0.jar')
+    compile files('libs/jackson-core-2.4.2.jar')
+    compile files('libs/jackson-databind-2.4.2.jar')
+    compile files('libs/BaiduLBS_Android.jar')
+    compile files('libs/baidumapapi_base_v4_0_0.jar')
+    compile files('libs/baidumapapi_cloud_v4_0_0.jar')
+    compile files('libs/baidumapapi_map_v4_0_0.jar')
+    compile files('libs/baidumapapi_radar_v4_0_0.jar')
+    compile files('libs/baidumapapi_search_v4_0_0.jar')
+    compile files('libs/baidumapapi_util_v4_0_0.jar')
 }

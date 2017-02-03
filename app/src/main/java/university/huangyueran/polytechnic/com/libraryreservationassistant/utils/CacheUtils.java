@@ -25,6 +25,35 @@ public class CacheUtils {
             writer = new FileWriter(cacheFile);
             // 缓存失效的截止时间
             long deadline = System.currentTimeMillis() + 30 * 60 * 500;// 15分钟有效期
+            // 60*60*1000 一小时
+            writer.write(deadline + "\n");// 在第一行写入缓存时间, 换行
+            writer.write(json);// 写入json
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.close(writer);
+        }
+    }
+
+    /**
+     * 带有效期的缓存
+     *
+     * @param url
+     * @param json
+     * @param timespan
+     */
+    public static void setCache(String url, String json, Long timespan) {
+        // 以url为文件名, 以json为文件内容,保存在本地
+        File cacheDir = UIUtils.getContext().getCacheDir();// 本应用的缓存文件夹
+        // 生成缓存文件
+        File cacheFile = new File(cacheDir, url);
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(cacheFile);
+            // 缓存失效的截止时间
+            long deadline = System.currentTimeMillis() + timespan;// 15分钟有效期
             writer.write(deadline + "\n");// 在第一行写入缓存时间, 换行
             writer.write(json);// 写入json
             writer.flush();

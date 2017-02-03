@@ -51,7 +51,7 @@ public class TbTopicReply implements Serializable {
     }
 
     public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+        this.authorName = authorName == null ? null : authorName.trim();
     }
 
     public String getContent() {
@@ -59,7 +59,7 @@ public class TbTopicReply implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = content == null ? null : content.trim();
     }
 
     public String getIpaddr() {
@@ -67,7 +67,7 @@ public class TbTopicReply implements Serializable {
     }
 
     public void setIpaddr(String ipaddr) {
-        this.ipaddr = ipaddr;
+        this.ipaddr = ipaddr == null ? null : ipaddr.trim();
     }
 
     public Integer getIsdel() {

@@ -3,7 +3,7 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.domai
 import java.io.Serializable;
 import java.util.Date;
 
-public class TbSeat  implements Serializable {
+public class TbSeat implements Serializable {
     private Long id;
 
     private Long readroomId;
@@ -17,6 +17,12 @@ public class TbSeat  implements Serializable {
     private Date updated;
 
     private Integer seatIndex;
+
+    private Integer x;
+
+    private Integer y;
+
+    private Long reservationId;
 
     public Long getId() {
         return id;
@@ -72,5 +78,29 @@ public class TbSeat  implements Serializable {
 
     public void setSeatIndex(Integer seatIndex) {
         this.seatIndex = seatIndex;
+    }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
+    public Long getReservationId() {
+        return reservationId;
+    }
+
+    public void setReservationId(Long reservationId) {
+        this.reservationId = reservationId;
     }
 }

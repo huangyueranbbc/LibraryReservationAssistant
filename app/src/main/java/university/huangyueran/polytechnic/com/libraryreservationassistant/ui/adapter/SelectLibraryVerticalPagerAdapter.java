@@ -92,7 +92,7 @@ public class SelectLibraryVerticalPagerAdapter extends PagerAdapter {
                 final Long library_id = libraries.get(showPosition).getId(); // 当前点击item的图书馆id
 
                 // 网络请求数据
-                final String url = GlobalValue.BASE_URL+"/readroom/list";
+                final String url = GlobalValue.BASE_URL + "/readroom/list";
                 String cache = CacheUtils.getCache("readroom-list" + library_id);
 
                 if (!StringUtils.isEmpty(cache)) {
@@ -135,7 +135,6 @@ public class SelectLibraryVerticalPagerAdapter extends PagerAdapter {
                                 @Override
                                 public void onStart() {
                                     super.onStart();
-                                    dialog.setTitle("正在加载中");
                                 }
 
                                 @Override

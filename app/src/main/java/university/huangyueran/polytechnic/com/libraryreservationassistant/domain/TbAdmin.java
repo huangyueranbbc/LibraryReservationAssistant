@@ -3,7 +3,7 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.domai
 import java.io.Serializable;
 import java.util.Date;
 
-public class TbAdmin implements Serializable {
+public class TbAdmin implements Serializable{
     private String id;
 
     private String username;
@@ -27,7 +27,7 @@ public class TbAdmin implements Serializable {
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id == null ? null : id.trim();
     }
 
     public String getUsername() {
@@ -35,7 +35,7 @@ public class TbAdmin implements Serializable {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username == null ? null : username.trim();
     }
 
     public String getPassword() {
@@ -43,7 +43,7 @@ public class TbAdmin implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password == null ? null : password.trim();
     }
 
     public String getNickname() {
@@ -51,7 +51,7 @@ public class TbAdmin implements Serializable {
     }
 
     public void setNickname(String nickname) {
-        this.nickname = nickname;
+        this.nickname = nickname == null ? null : nickname.trim();
     }
 
     public Date getLogintime() {
@@ -67,7 +67,7 @@ public class TbAdmin implements Serializable {
     }
 
     public void setLastLoginIp(String lastLoginIp) {
-        this.lastLoginIp = lastLoginIp;
+        this.lastLoginIp = lastLoginIp == null ? null : lastLoginIp.trim();
     }
 
     public Integer getIsdel() {

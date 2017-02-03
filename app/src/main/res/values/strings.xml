@@ -4,6 +4,7 @@
     <string name="feed">FEED</string>
     <string name="activity">ACTIVITY</string>
     <string name="settings">SETTINGS</string>
+    <string name="action_settings">Settings</string>
 
     <string-array name="tab_names">
         <item>T1图书馆</item>

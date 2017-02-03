@@ -6,9 +6,9 @@ import java.util.Date;
 public class TbSeatUserRecord implements Serializable {
     private Long id;
 
-    private Integer seatId;
+    private Long seatId;
 
-    private Integer userId;
+    private Long userId;
 
     private Date usedTime;
 
@@ -26,19 +26,19 @@ public class TbSeatUserRecord implements Serializable {
         this.id = id;
     }
 
-    public Integer getSeatId() {
+    public Long getSeatId() {
         return seatId;
     }
 
-    public void setSeatId(Integer seatId) {
+    public void setSeatId(Long seatId) {
         this.seatId = seatId;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -63,7 +63,7 @@ public class TbSeatUserRecord implements Serializable {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.userName = userName == null ? null : userName.trim();
     }
 
     public Date getCreated() {

@@ -103,20 +103,4 @@ public class TbReadroom implements Serializable {
     public void setSeatCount(Integer seatCount) {
         this.seatCount = seatCount;
     }
-
-    @Override
-    public String toString() {
-        return "TbReadroom{" +
-                "id=" + id +
-                ", libraryId=" + libraryId +
-                ", roomName='" + roomName + '\'' +
-                ", floor=" + floor +
-                ", usedSeat=" + usedSeat +
-                ", reservationSeat=" + reservationSeat +
-                ", isdel=" + isdel +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", seatCount=" + seatCount +
-                '}';
-    }
 }

@@ -71,7 +71,7 @@ public class TbReservation implements Serializable {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username == null ? null : username.trim();
     }
 
     public String getNickname() {
@@ -79,7 +79,7 @@ public class TbReservation implements Serializable {
     }
 
     public void setNickname(String nickname) {
-        this.nickname = nickname;
+        this.nickname = nickname == null ? null : nickname.trim();
     }
 
     public Integer getStatus() {
@@ -112,5 +112,22 @@ public class TbReservation implements Serializable {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    @Override
+    public String toString() {
+        return "TbReservation{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", timeSpan=" + timeSpan +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", username='" + username + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", status=" + status +
+                ", isdel=" + isdel +
+                ", seatId=" + seatId +
+                ", created=" + created +
+                '}';
     }
 }

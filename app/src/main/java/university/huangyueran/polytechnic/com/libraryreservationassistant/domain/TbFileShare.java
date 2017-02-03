@@ -39,7 +39,7 @@ public class TbFileShare implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title == null ? null : title.trim();
     }
 
     public String getFielPath() {
@@ -47,7 +47,7 @@ public class TbFileShare implements Serializable {
     }
 
     public void setFielPath(String fielPath) {
-        this.fielPath = fielPath;
+        this.fielPath = fielPath == null ? null : fielPath.trim();
     }
 
     public String getDownloadUrl() {
@@ -55,7 +55,7 @@ public class TbFileShare implements Serializable {
     }
 
     public void setDownloadUrl(String downloadUrl) {
-        this.downloadUrl = downloadUrl;
+        this.downloadUrl = downloadUrl == null ? null : downloadUrl.trim();
     }
 
     public Long getSize() {
@@ -71,7 +71,7 @@ public class TbFileShare implements Serializable {
     }
 
     public void setFileDesc(String fileDesc) {
-        this.fileDesc = fileDesc;
+        this.fileDesc = fileDesc == null ? null : fileDesc.trim();
     }
 
     public String getIconUrl() {
@@ -79,7 +79,7 @@ public class TbFileShare implements Serializable {
     }
 
     public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
+        this.iconUrl = iconUrl == null ? null : iconUrl.trim();
     }
 
     public Integer getLaudCount() {

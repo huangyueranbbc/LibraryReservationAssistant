@@ -23,7 +23,7 @@ public class TbSystemNotice implements Serializable {
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id == null ? null : id.trim();
     }
 
     public String getTitle() {
@@ -31,7 +31,7 @@ public class TbSystemNotice implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title == null ? null : title.trim();
     }
 
     public String getContent() {
@@ -39,7 +39,7 @@ public class TbSystemNotice implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = content == null ? null : content.trim();
     }
 
     public Integer getIsdel() {

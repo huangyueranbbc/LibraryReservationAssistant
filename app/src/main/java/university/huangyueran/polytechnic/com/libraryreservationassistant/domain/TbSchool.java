@@ -27,7 +27,7 @@ public class TbSchool implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null ? null : name.trim();
     }
 
     public String getAddress() {
@@ -35,7 +35,7 @@ public class TbSchool implements Serializable {
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address = address == null ? null : address.trim();
     }
 
     public Date getCreated() {

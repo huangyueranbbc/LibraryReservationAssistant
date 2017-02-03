@@ -43,7 +43,7 @@ public class TbTopic implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title == null ? null : title.trim();
     }
 
     public String getContent() {
@@ -51,7 +51,7 @@ public class TbTopic implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = content == null ? null : content.trim();
     }
 
     public Long getAuthorId() {
@@ -67,7 +67,7 @@ public class TbTopic implements Serializable {
     }
 
     public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+        this.authorName = authorName == null ? null : authorName.trim();
     }
 
     public Integer getLaudCount() {
@@ -99,7 +99,7 @@ public class TbTopic implements Serializable {
     }
 
     public void setIpaddr(String ipaddr) {
-        this.ipaddr = ipaddr;
+        this.ipaddr = ipaddr == null ? null : ipaddr.trim();
     }
 
     public Integer getIsdel() {

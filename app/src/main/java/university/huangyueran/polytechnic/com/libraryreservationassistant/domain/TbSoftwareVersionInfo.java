@@ -33,7 +33,7 @@ public class TbSoftwareVersionInfo implements Serializable {
     }
 
     public void setSoftName(String softName) {
-        this.softName = softName;
+        this.softName = softName == null ? null : softName.trim();
     }
 
     public String getVersion() {
@@ -41,7 +41,7 @@ public class TbSoftwareVersionInfo implements Serializable {
     }
 
     public void setVersion(String version) {
-        this.version = version;
+        this.version = version == null ? null : version.trim();
     }
 
     public String getPath() {
@@ -49,7 +49,7 @@ public class TbSoftwareVersionInfo implements Serializable {
     }
 
     public void setPath(String path) {
-        this.path = path;
+        this.path = path == null ? null : path.trim();
     }
 
     public String getUrl() {
@@ -57,7 +57,7 @@ public class TbSoftwareVersionInfo implements Serializable {
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.url = url == null ? null : url.trim();
     }
 
     public Integer getIsdel() {

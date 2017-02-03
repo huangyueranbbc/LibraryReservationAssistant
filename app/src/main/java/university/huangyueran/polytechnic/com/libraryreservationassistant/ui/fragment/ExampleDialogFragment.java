@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Random;
 
 import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
-import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.adapter.SampleAdapter;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.adapter.yuyueadapter.SampleAdapter;
 
 /**
  * @author kakajika
@@ -103,7 +103,7 @@ public class ExampleDialogFragment extends SwipeAwayDialogFragment {
                 String KEY_ICON = "icon";
                 String KEY_COLOR = "color";
                 Map<String, Integer> map;
-                List<Map<String, Integer>> mSampleList = new ArrayList<>();
+                List<Map<String, Integer>> mSampleList = new ArrayList<Map<String, Integer>>();
                 int[] icons = {
                         R.drawable.icon_1,
                         R.drawable.icon_2,

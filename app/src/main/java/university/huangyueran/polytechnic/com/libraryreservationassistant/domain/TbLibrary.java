@@ -1,8 +1,9 @@
 package university.huangyueran.polytechnic.com.libraryreservationassistant.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TbLibrary {
+public class TbLibrary implements Serializable {
     private Long id;
 
     private Long schoolId;
@@ -18,6 +19,12 @@ public class TbLibrary {
     private Date created;
 
     private Date updated;
+
+    private Double longitude;
+
+    private Double latitude;
+
+    private Double radius;
 
     public Long getId() {
         return id;
@@ -83,17 +90,27 @@ public class TbLibrary {
         this.updated = updated;
     }
 
-    @Override
-    public String toString() {
-        return "TbLibrary{" +
-                "id=" + id +
-                ", schoolId=" + schoolId +
-                ", name='" + name + '\'' +
-                ", seatCount=" + seatCount +
-                ", roomCount=" + roomCount +
-                ", isdel=" + isdel +
-                ", created=" + created +
-                ", updated=" + updated +
-                '}';
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
     }
 }

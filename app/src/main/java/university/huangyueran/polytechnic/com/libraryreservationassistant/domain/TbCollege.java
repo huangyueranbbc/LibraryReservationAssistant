@@ -3,7 +3,7 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.domai
 import java.io.Serializable;
 import java.util.Date;
 
-public class TbCollege  implements Serializable {
+public class TbCollege implements Serializable {
     private String id;
 
     private String name;
@@ -23,7 +23,7 @@ public class TbCollege  implements Serializable {
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id == null ? null : id.trim();
     }
 
     public String getName() {
@@ -31,7 +31,7 @@ public class TbCollege  implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null ? null : name.trim();
     }
 
     public Long getSchoolId() {
@@ -47,7 +47,7 @@ public class TbCollege  implements Serializable {
     }
 
     public void setSchoolName(String schoolName) {
-        this.schoolName = schoolName;
+        this.schoolName = schoolName == null ? null : schoolName.trim();
     }
 
     public String getAddress() {
@@ -55,7 +55,7 @@ public class TbCollege  implements Serializable {
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address = address == null ? null : address.trim();
     }
 
     public Date getCreated() {
