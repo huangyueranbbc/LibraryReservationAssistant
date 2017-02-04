@@ -22,7 +22,7 @@ import java.util.List;
 
 import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 
-public class MainActivity extends AppCompatActivity {
+class MainActivityBak extends AppCompatActivity {
     //http://api.map.baidu.com/geocoder/v2/?ak=xSoiv2RBSr1GNbC8BP4GHKefPiF5NW1x&mcode=08:57:B1:39:DE:60:01:32:F8:0A:10:DD:CE:C0:4E:EC:DC:A5:FD:AF;com.manager.oa.huangyueran.baidumap&callback=renderReverse&location=30.20395,115.082496&output=json&pois=1
 
     private TextView locationInfoTextView = null;

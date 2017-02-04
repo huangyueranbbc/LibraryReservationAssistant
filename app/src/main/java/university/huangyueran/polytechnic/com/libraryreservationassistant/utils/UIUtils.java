@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.Process;
 import android.view.View;
 
+import com.baidu.mapapi.model.LatLng;
+
 import university.huangyueran.polytechnic.com.libraryreservationassistant.global.MainApplication;
 
 
@@ -23,6 +25,13 @@ public class UIUtils {
      */
     public static Context getContext() {
         return MainApplication.getContext();
+    }
+
+    /**
+     * 获取用户当前地理位置坐标
+     */
+    public static LatLng getUserLocationInfo() {
+        return MainApplication.getmUserLocation();
     }
 
     /**

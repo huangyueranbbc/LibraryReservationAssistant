@@ -4,16 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.github.rubensousa.raiflatbutton.RaiflatButton;
@@ -34,6 +31,7 @@ import com.seatview.seatchoosetest.view.SeatView;
 
 import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.Random;
 
 import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.LMSResult;
@@ -41,7 +39,9 @@ import university.huangyueran.polytechnic.com.libraryreservationassistant.domain
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbReadroom;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbReservation;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbSeat;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbUser;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.global.GlobalValue;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.global.MainApplication;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.fragment.SelectReadRoomDialogFragment;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.fragment.SelectReservationDialogFragment;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.CacheUtils;
@@ -63,50 +63,21 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
     private CH_seatInfo mCurrentSeat;
     private RaiflatButton mBtnSubmitSeat;
     private TbLibrary library;
-    private LocationClient mLocClient;
     private double distance;
+    private LocationClient mLocClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_select_seat);
+        mLocClient = MainApplication.mLocClient;
         // 获取传递的座位数据
         Intent intent = this.getIntent();
         seats = (ArrayList<TbSeat>) intent.getSerializableExtra("seats");
         readroom = (TbReadroom) intent.getSerializableExtra("readroom");
-        initLibraryInfo(); // 获取图书馆信息
+        initLibraryInfo(); // 获取图书位置
         initButton();
         init();
-    }
-
-    /**
-     * 初始化百度定位
-     */
-    private void initBaiduSDK() {
-        mLocClient = new LocationClient(this);
-        //设置定位条件
-        LocationClientOption option = new LocationClientOption();
-        option.setOpenGps(true); // 打开gps
-        option.setCoorType("bd09ll"); // 设置坐标类型
-        option.setProdName("LocationDemo"); //设置产品线名称。强烈建议您使用自定义的产品线名称，方便我们以后为您提供更高效准确的定位服务。
-        option.setScanSpan(1000); // 设置定位时间间隔 1秒
-        mLocClient.setLocOption(option);
-
-        //注册位置监听器
-        mLocClient.registerLocationListener(new BDLocationListener() {
-            @Override
-            public void onReceiveLocation(BDLocation location) {
-                // 当前坐标
-                LatLng l1 = new LatLng(library.getLatitude(), library.getLongitude()); // 图书馆坐标
-                LatLng l2 = new LatLng(location.getLatitude(), location.getLongitude()); // 用户坐标
-                // 用户和图书馆距离
-                distance = DistanceUtil.getDistance(l1, l2);
-            }
-        });
-
-        mLocClient.start(); // 开始定位
-        mLocClient.requestLocation();
     }
 
     private void initLibraryInfo() {
@@ -114,6 +85,7 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
         final String url = GlobalValue.BASE_URL + "/library/show";
         RequestParams params = new RequestParams();
         params.addQueryStringParameter("id", String.valueOf(readroom.getLibraryId()));
+        params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.GET,
@@ -125,7 +97,10 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
                         Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                         library = gson.fromJson(responseInfo.result, new TypeToken<TbLibrary>() {
                         }.getType());
-                        initBaiduSDK();
+                        LatLng libraryLocation = new LatLng(library.getLatitude(), library.getLongitude());
+                        distance = DistanceUtil.getDistance(UIUtils.getUserLocationInfo(), libraryLocation);
+                        Log.i("location", "location: " + distance);
+                        Log.i("location", "location: " + UIUtils.getUserLocationInfo().latitude + ":" + UIUtils.getUserLocationInfo().longitude);
                     }
 
                     @Override
@@ -213,13 +188,18 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
                     // 在图书馆内
                     if (library != null) {
                         if (distance <= library.getRadius()) { // 如果小于半径,则在图书馆范围内
-                            // TODO 假数据 用户ID 后期从缓存中取用户信息
-                            final Long user_id = Long.valueOf(1);
+                            String userLoginInfo = CacheUtils.getCacheNotiming(GlobalValue.LOGININFO);
+                            Log.i("userLoginInfo", "userLoginInfo: "+userLoginInfo);
+                            Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                            TbUser user = gson.fromJson(userLoginInfo, TbUser.class);
+                            final Long user_id = user.getUserId();
+
                             // 请求网络数据 订座
                             final String url = GlobalValue.BASE_URL + "/reservation/create";
                             RequestParams params = new RequestParams();
                             params.addQueryStringParameter("user_id", String.valueOf(user_id));
                             params.addQueryStringParameter("seat_id", mCurrentSeat.getId());
+                            params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
                             HttpUtils http = new HttpUtils();
                             http.send(HttpRequest.HttpMethod.GET,
@@ -231,7 +211,6 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
                                         public void onSuccess(ResponseInfo<String> responseInfo) {
                                             // 得到图书馆list集合
                                             Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-//                                    LMSResult result = LMSResult.formatToPojo(responseInfo.result, LMSResult.class);
                                             LMSResult result = gson.fromJson(responseInfo.result, new TypeToken<LMSResult>() {
                                             }.getType());
 
@@ -241,12 +220,16 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
                                                 TbReservation reservation = gson.fromJson(json, TbReservation.class);
                                                 CacheUtils.setCache(GlobalValue.RESERVATION_CACHE_INFO + user_id, json, (long) (reservation.getTimeSpan() * 3600000));
                                                 // TODO 展示预订信息
-                                                dialog.dismiss();
                                                 SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(getSupportFragmentManager(), "alert");
                                                 // 更新Activity
                                                 list_CH_seatInfo.get(mCurrentSeat.getPosition()).setStatus(2);
                                                 mSSView.invalidate();
+                                            } else if (result.getStatus() == 401) { //  已有预约记录
+                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CREATEHASRECORD, null).show(getSupportFragmentManager(), "已有预约记录");
+                                            } else { // 预约失败
+                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CREATEERROR, null).show(getSupportFragmentManager(), "预约服务错误");
                                             }
+                                            dialog.dismiss();
 
                                         }
 

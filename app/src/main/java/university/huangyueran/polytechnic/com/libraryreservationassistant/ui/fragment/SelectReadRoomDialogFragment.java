@@ -28,6 +28,7 @@ import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbReadroom;
@@ -120,6 +121,7 @@ public class SelectReadRoomDialogFragment extends SwipeAwayDialogFragment {
                         Long readroom_id = readrooms.get(which).getId();
                         RequestParams params = new RequestParams();
                         params.addQueryStringParameter("id", String.valueOf(readroom_id));
+                        params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
                         HttpUtils http = new HttpUtils();
                         http.send(HttpRequest.HttpMethod.GET,

@@ -1,6 +1,7 @@
 package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.adapter;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class LibraryInfoVerticalPagerAdapter extends PagerAdapter {
 
     private LayoutInflater mLayoutInflater;
 
-    public LibraryInfoVerticalPagerAdapter(final Context context) {
+    public LibraryInfoVerticalPagerAdapter(final Context context, FragmentManager mFragmentManager) {
         mLayoutInflater = LayoutInflater.from(context);
     }
 

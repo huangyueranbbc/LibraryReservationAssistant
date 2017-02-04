@@ -79,7 +79,7 @@ public class HorizontalPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return mIsTwoWay ? 3 * 2 : LIBRARIES.length; // 返回三个垂直viewpager
+        return 6; // 返回三个垂直viewpager
     }
 
     @Override
@@ -89,6 +89,7 @@ public class HorizontalPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(final ViewGroup container, final int position) {
+        final ProgressDialog dialog = new ProgressDialog(mContext);
         final View view;
         if (mIsTwoWay) {
             view = mLayoutInflater.inflate(R.layout.two_way_item, container, false);
@@ -103,7 +104,7 @@ public class HorizontalPagerAdapter extends PagerAdapter {
                         final int schoole_id = 1;
                         // 获取图书馆数据
                         // 取缓存
-                        String cache = CacheUtils.getCache("library-list" + schoole_id);
+                        String cache = CacheUtils.getCacheNotiming("library-list" + schoole_id);
                         if (!StringUtils.isEmpty(cache)) {
                             Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                             libraries = gson.fromJson(cache, new TypeToken<List<TbLibrary>>() {
@@ -128,7 +129,6 @@ public class HorizontalPagerAdapter extends PagerAdapter {
                             http.send(HttpRequest.HttpMethod.GET,
                                     url, params,
                                     new RequestCallBack<String>() {
-                                        private ProgressDialog dialog = new ProgressDialog(mContext);
 
                                         @Override
                                         public void onSuccess(ResponseInfo<String> responseInfo) {
@@ -143,11 +143,11 @@ public class HorizontalPagerAdapter extends PagerAdapter {
                                                         libraries.get(i).getName());
                                                 two_way_libraries[i] = object;
                                             }
-                                            CacheUtils.setCache("library-list" + schoole_id, responseInfo.result);
+                                            dialog.dismiss();
                                             SelectLibraryVerticalPagerAdapter selectLibraryVerticalPagerAdapter = new SelectLibraryVerticalPagerAdapter(mContext, two_way_libraries, libraries, mFragmentManager);
                                             verticalInfiniteCycleViewPager.setAdapter(selectLibraryVerticalPagerAdapter);
                                             verticalPagerAdapterMap.put(0, selectLibraryVerticalPagerAdapter);
-                                            dialog.dismiss();
+                                            CacheUtils.setCacheNotiming("library-list" + schoole_id, responseInfo.result);
                                         }
 
                                         @Override
@@ -176,7 +176,7 @@ public class HorizontalPagerAdapter extends PagerAdapter {
                 case 1: //预约管理
                 case 4:
                     if (null == verticalPagerAdapterMap.get(1)) {
-                        YYManagerVerticalPagerAdapter yyManagerVerticalPagerAdapter = new YYManagerVerticalPagerAdapter(mContext);
+                        YYManagerVerticalPagerAdapter yyManagerVerticalPagerAdapter = new YYManagerVerticalPagerAdapter(mContext, mFragmentManager);
                         verticalInfiniteCycleViewPager.setAdapter(yyManagerVerticalPagerAdapter);
                         verticalPagerAdapterMap.put(1, yyManagerVerticalPagerAdapter);
                     } else {
@@ -186,7 +186,7 @@ public class HorizontalPagerAdapter extends PagerAdapter {
                 case 2: //馆内详情
                 case 5:
                     if (null == verticalPagerAdapterMap.get(2)) {
-                        LibraryInfoVerticalPagerAdapter libraryInfoVerticalPagerAdapter = new LibraryInfoVerticalPagerAdapter(mContext);
+                        LibraryInfoVerticalPagerAdapter libraryInfoVerticalPagerAdapter = new LibraryInfoVerticalPagerAdapter(mContext, mFragmentManager);
                         verticalInfiniteCycleViewPager.setAdapter(libraryInfoVerticalPagerAdapter);
                         verticalPagerAdapterMap.put(2, libraryInfoVerticalPagerAdapter);
                     } else {

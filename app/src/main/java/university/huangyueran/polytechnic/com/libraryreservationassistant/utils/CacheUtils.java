@@ -64,6 +64,66 @@ public class CacheUtils {
         }
     }
 
+    /**
+     * 无有效期的缓存
+     *
+     * @param json
+     */
+    public static void setCacheNotiming(String cacheName, String json) {
+        //写入缓存
+        // 以url为文件名, 以json为文件内容,保存在本地
+        File cacheDir = UIUtils.getContext().getCacheDir();// 本应用的缓存文件夹
+        // 生成缓存文件
+        File cacheFile = new File(cacheDir, cacheName);
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(cacheFile);
+            writer.write(json);// 写入json
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.close(writer);
+        }
+    }
+
+    /**
+     * 读取无有效期缓存
+     *
+     * @param cacheName
+     * @return
+     */
+    public static String getCacheNotiming(String cacheName) {
+        // 以url为文件名, 以json为文件内容,保存在本地
+        File cacheDir = UIUtils.getContext().getCacheDir();// 本应用的缓存文件夹
+        // 生成缓存文件
+        File cacheFile = new File(cacheDir, cacheName);
+        // 判断缓存是否存在
+        if (cacheFile.exists()) {
+            // 判断缓存是否有效
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new FileReader(cacheFile));
+                // 缓存有效
+                StringBuffer sb = new StringBuffer();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                    return sb.toString();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                IOUtils.close(reader);
+            }
+
+        }
+
+        return null;
+    }
+
     // 读缓存
     public static String getCache(String url) {
         // 以url为文件名, 以json为文件内容,保存在本地
@@ -101,4 +161,6 @@ public class CacheUtils {
 
         return null;
     }
+
+
 }
