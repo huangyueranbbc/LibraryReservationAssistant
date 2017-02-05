@@ -11,9 +11,11 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/ViewPagerIndicator" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/focusresize" />
             <option value="$PROJECT_DIR$/infinitecycleviewpager" />
             <option value="$PROJECT_DIR$/pager-bottom-tab-strip" />
             <option value="$PROJECT_DIR$/phoenixlibrary" />
+            <option value="$PROJECT_DIR$/pullToRefresh" />
             <option value="$PROJECT_DIR$/selfslidemenulibrary" />
           </set>
         </option>
@@ -22,9 +24,11 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/ViewPagerIndicator" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/focusresize" />
             <option value="$PROJECT_DIR$/infinitecycleviewpager" />
             <option value="$PROJECT_DIR$/pager-bottom-tab-strip" />
             <option value="$PROJECT_DIR$/phoenixlibrary" />
+            <option value="$PROJECT_DIR$/pullToRefresh" />
             <option value="$PROJECT_DIR$/selfslidemenulibrary" />
           </set>
         </option>

@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -90,6 +91,7 @@ public class MainActivity extends BaseActivity {
             permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
             permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
             permissions.add(Manifest.permission.CHANGE_WIFI_STATE);
+            permissions.add(Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS);
             if (!permissions.isEmpty()) {
                 requestPermissions(permissions.toArray(new String[permissions.size()]), 1);
             }
@@ -136,6 +138,7 @@ public class MainActivity extends BaseActivity {
 
             RequestParams params = new RequestParams();
             params.addQueryStringParameter("id", String.valueOf(schoole_id));
+            params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
             HttpUtils http = new HttpUtils();
             http.send(HttpRequest.HttpMethod.GET,
@@ -203,6 +206,11 @@ public class MainActivity extends BaseActivity {
         // transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
         transaction.add(R.id.frameLayout, FragmentFactory.createFragment(0));
         mFragmentMap.put(0, 0);
+        // TODO 提前初始化 避免卡住 BUG 无解
+        transaction.add(R.id.frameLayout, FragmentFactory.createFragment(1));
+        mFragmentMap.put(1, 1);
+        transaction.hide(FragmentFactory.createFragment(1));
+
         transaction.commit();
     }
 
@@ -212,7 +220,7 @@ public class MainActivity extends BaseActivity {
         //用TabItemBuilder构建一个导航按钮
         TabItemBuilder tabItemBuilder = new TabItemBuilder(this).create()
                 .setDefaultIcon(android.R.drawable.ic_menu_call)
-                .setText("座位预约")
+                .setText("空白空白")
                 .setSelectedColor(testColors[0])
                 .setTag("A")
                 .build();
@@ -220,7 +228,7 @@ public class MainActivity extends BaseActivity {
         //构建导航栏,得到Controller进行后续控制
         controller = pagerBottomTabLayout.builder()
                 .addTabItem(tabItemBuilder)
-                .addTabItem(android.R.drawable.ic_menu_agenda, "预约管理", testColors[1])
+                .addTabItem(android.R.drawable.ic_menu_agenda, "座位预约", testColors[1])
                 .addTabItem(android.R.drawable.sym_action_chat, "联系人", testColors[2])
                 .addTabItem(android.R.drawable.star_big_on, "兴趣圈", testColors[3])
                 .addTabItem(android.R.drawable.ic_menu_share, "分享", testColors[4])

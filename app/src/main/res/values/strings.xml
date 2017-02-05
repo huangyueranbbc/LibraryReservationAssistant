@@ -13,4 +13,6 @@
         <item>T4图书馆</item>
         <item>T5图书馆</item>
     </string-array>
+
+    <string name="content_description_item_custom_image">image</string>
 </resources>

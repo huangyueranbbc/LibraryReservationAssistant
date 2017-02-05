@@ -6,8 +6,6 @@ import java.util.Date;
 public class TbTopic implements Serializable {
     private Long id;
 
-    private String title;
-
     private String content;
 
     private Long authorId;
@@ -26,9 +24,13 @@ public class TbTopic implements Serializable {
 
     private Long hobbyId;
 
+    private String hobbyName;
+
     private Date created;
 
     private Date updated;
+
+    private String topicPic;
 
     public Long getId() {
         return id;
@@ -36,14 +38,6 @@ public class TbTopic implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
     }
 
     public String getContent() {
@@ -118,6 +112,14 @@ public class TbTopic implements Serializable {
         this.hobbyId = hobbyId;
     }
 
+    public String getHobbyName() {
+        return hobbyName;
+    }
+
+    public void setHobbyName(String hobbyName) {
+        this.hobbyName = hobbyName == null ? null : hobbyName.trim();
+    }
+
     public Date getCreated() {
         return created;
     }
@@ -132,5 +134,13 @@ public class TbTopic implements Serializable {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getTopicPic() {
+        return topicPic;
+    }
+
+    public void setTopicPic(String topicPic) {
+        this.topicPic = topicPic == null ? null : topicPic.trim();
     }
 }

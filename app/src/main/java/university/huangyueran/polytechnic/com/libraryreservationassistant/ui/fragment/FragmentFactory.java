@@ -18,16 +18,16 @@ public class FragmentFactory {
         if (fragment == null) {
             switch (pos) {
                 case 0:
-                    fragment = new ReservationFragment();
+                    fragment = new AFragment();
                     break;
                 case 1:
-                    fragment = new AFragment();
+                    fragment = new ReservationFragment();
                     break;
                 case 2:
                     fragment = new AFragment();
                     break;
                 case 3:
-                    fragment = new AFragment();
+                    fragment = new InterestCircleFragment();
                     break;
                 case 4:
                     fragment = new AFragment();

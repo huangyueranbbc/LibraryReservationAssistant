@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.Guillotine" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:colorPrimaryDark">@color/guillotine_background</item>
+        <item name="android:colorPrimaryDark">@color/tab_text_color_normal</item>
         <item name="android:colorPrimary">@color/guillotine_background_dark</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
@@ -14,5 +14,11 @@
     </style>
 
     <style name="AppTheme" parent="Theme.Guillotine" />
+
+    <!-- Base application theme. -->
+    <style name="MyAppTheme" parent="Theme.Guillotine">
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/windowBackground</item>
+    </style>
 
 </resources>

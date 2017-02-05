@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         applicationId "university.huangyueran.polytechnic.com.libraryreservationassistant"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -91,4 +91,6 @@ dependencies {
     compile files('libs/baidumapapi_util_v4_0_0.jar')
     compile files('libs/jcore-android_v1.0.0.jar')
     compile files('libs/jpush-android_v3.0.0.jar')
+    compile project(':focusresize')
+    compile project(':pullToRefresh')
 }

@@ -11,17 +11,16 @@ import android.view.ViewGroup;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.adapter.MainPagerAdapter;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.UIUtils;
-import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.test.TestUrls;
 
 /**
  * 座位预约Fragment
  * Created by huangyueran on 2017/1/29.
  */
-public class ReservationFragment extends BaseFragment implements TestUrls {
+public class ReservationFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i("llll", "测试页面A");
+        Log.i("llll", "座位预约");
         View view = UIUtils.inflate(R.layout.layout_fragment_yuyue);
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.vp_main);
         viewPager.setAdapter(new MainPagerAdapter(getChildFragmentManager()));

@@ -53,7 +53,6 @@ public class SelectLibraryVerticalPagerAdapter extends PagerAdapter {
     private Context mContext;
 
     public SelectLibraryVerticalPagerAdapter(final Context context, Utils.LibraryObject[] two_way_libraries, ArrayList<TbLibrary> libraries, FragmentManager fragmentManager) {
-        Toast.makeText(context, "请选择图书馆", Toast.LENGTH_LONG).show();
         this.mContext = context;
         this.libraries = libraries;
         this.TWO_WAY_LIBRARIES = two_way_libraries;
@@ -74,6 +73,7 @@ public class SelectLibraryVerticalPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(final ViewGroup container, final int position) {
+//        Toast.makeText(mContext, "请选择图书馆", Toast.LENGTH_LONG).show();
         final View view = mLayoutInflater.inflate(R.layout.item, container, false);
 
         // TODO 点击事件监听
