@@ -63,7 +63,7 @@ public class TopicListAdapter extends FocusResizeAdapter<RecyclerView.ViewHolder
 
     private void fill(CustomViewHolder holder, TbTopic topic) {
         holder.tvAuthor.setText(topic.getAuthorName());
-        holder.tvContent.setText(topic.getContent());
+        holder.tvContent.setText("【" + topic.getHobbyName() + "】" + topic.getContent());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         holder.tvPosttime.setText(format.format(topic.getCreated()));
         holder.tvReplys.setText(topic.getReplyCount() + "");
@@ -76,7 +76,7 @@ public class TopicListAdapter extends FocusResizeAdapter<RecyclerView.ViewHolder
     public void onItemBigResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs) {
         if (((CustomViewHolder) viewHolder).tvContent.getTextSize() + (dyAbs / OFFSET_TEXT_SIZE) >= context.getResources().getDimension(R.dimen.font_xxxlarge)) {
             ((CustomViewHolder) viewHolder).tvContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.font_xxxlarge));
-            ((CustomViewHolder) viewHolder).tvContent.setSingleLine(false);
+//            ((CustomViewHolder) viewHolder).tvContent.setSingleLine(false);
         } else {
             ((CustomViewHolder) viewHolder).tvContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, ((CustomViewHolder) viewHolder).tvContent.getTextSize() + (dyAbs / OFFSET_TEXT_SIZE));
         }
@@ -121,7 +121,7 @@ public class TopicListAdapter extends FocusResizeAdapter<RecyclerView.ViewHolder
     public void onItemSmallResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs) {
         if (((CustomViewHolder) viewHolder).tvContent.getTextSize() - (dyAbs / OFFSET_TEXT_SIZE) <= context.getResources().getDimension(R.dimen.font_medium)) {
             ((CustomViewHolder) viewHolder).tvContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.font_medium));
-            ((CustomViewHolder) viewHolder).tvContent.setSingleLine(true);
+//            ((CustomViewHolder) viewHolder).tvContent.setSingleLine(true);
         } else {
             ((CustomViewHolder) viewHolder).tvContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, ((CustomViewHolder) viewHolder).tvContent.getTextSize() - (dyAbs / OFFSET_TEXT_SIZE));
         }

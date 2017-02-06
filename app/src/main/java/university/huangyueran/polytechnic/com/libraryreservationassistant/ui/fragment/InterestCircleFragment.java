@@ -21,6 +21,10 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
+import com.nightonke.boommenu.BoomButtons.TextInsideCircleButton;
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.ButtonEnum;
 
 import java.security.Timestamp;
 import java.util.ArrayList;
@@ -35,6 +39,7 @@ import focusresize.domain.CustomObject;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbTopic;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.global.GlobalValue;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.manager.BuilderManager;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.TimestampTypeAdapter;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.UIUtils;
 
@@ -50,6 +55,9 @@ public class InterestCircleFragment extends BaseFragment {
     private List<TbTopic> mTopicList;
 
     boolean isLoadMore = false; // 防止重复加载N页
+    private String[] hobby_title = {"综合", "文学", "理学", "医学", "军事学", "哲学", "经济学", "教育学", "管理学"};
+
+    private Integer mHobbyid = 0; //当前兴趣id 默认0 综合
 
     @Nullable
     @Override
@@ -60,7 +68,30 @@ public class InterestCircleFragment extends BaseFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         linearLayoutManager = new LinearLayoutManager(UIUtils.getContext());
 
-        loadDate();
+        // 创建爆炸按钮
+        BoomMenuButton bmb1 = (BoomMenuButton) view.findViewById(R.id.bmb1);
+        bmb1.setButtonEnum(ButtonEnum.TextInsideCircle); // 设置按钮类型 为文字内嵌类型
+        bmb1.bringToFront(); // 放到最上层 不被遮挡
+        for (int i = 0; i < bmb1.getPiecePlaceEnum().pieceNumber(); i++) {
+            TextInsideCircleButton.Builder textInsideCircleButtonBuilder = BuilderManager.getTextInsideCircleButtonBuilder();
+            textInsideCircleButtonBuilder.normalText(hobby_title[i]);
+            // 点击事件监听处理
+            textInsideCircleButtonBuilder.listener(new OnBMClickListener() {
+                @Override
+                public void onBoomButtonClick(int index) {
+//                    Log.i(TAG, "当前按钮的坐标: " + index);
+                    // 兴趣圈id= index 0~8 0为综合
+                    // 销毁原先的数据
+                    topicListAdapter = null;
+//                    topicListAdapter=new
+                    // 重新从网络加载数据
+                    loadDate(index);
+                }
+            });
+            bmb1.addBuilder(textInsideCircleButtonBuilder);
+        }
+
+        loadDate(mHobbyid); // 默认加载综合
 
 //        createCustomAdapter(recyclerView, linearLayoutManager);
 
@@ -68,12 +99,13 @@ public class InterestCircleFragment extends BaseFragment {
     }
 
     // 加载第一页数据
-    private void loadDate() {
+    private void loadDate(int hobby_id) {
         final String url = GlobalValue.BASE_URL + "/topic/list/alltopic";
         final int page = 1; // 页数 首次加载第一页
 
         RequestParams params = new RequestParams();
         params.addQueryStringParameter("page", String.valueOf(page));
+        params.addQueryStringParameter("hobby_id", String.valueOf(hobby_id));  // 兴趣圈id
         params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
         HttpUtils http = new HttpUtils();
@@ -86,12 +118,11 @@ public class InterestCircleFragment extends BaseFragment {
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         // 得到图书馆list集合
                         Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        if (mTopicList != null) {
+                            mTopicList.clear();
+                        }
                         mTopicList = gson.fromJson(responseInfo.result, new TypeToken<List<TbTopic>>() {
                         }.getType());
-                        Log.i(TAG, "resutl: " + mTopicList);
-                        Log.i(TAG, "topics: " + mTopicList.toString());
-                        Log.i(TAG, "topic: " + mTopicList.get(0).toString());
-                        Log.i(TAG, "topic.size: " + mTopicList.size());
                         createCustomAdapter(recyclerView, linearLayoutManager);
                         dialog.dismiss();
                     }
@@ -118,28 +149,32 @@ public class InterestCircleFragment extends BaseFragment {
         if (recyclerView != null) {
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(topicListAdapter);
-            recyclerView.addOnScrollListener(new FocusResizeScrollListener<>(topicListAdapter, linearLayoutManager));
-            recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
-                @Override
-                public synchronized void onLoadMore(int currentPage) {
-                    if (!isLoadMore) { // false 不是加载状态 才进行加载
-                        isLoadMore = true;
-                        Log.i(TAG, "加载更多!!!: ");
-                        Toast.makeText(getContext(), "加载完毕！", Toast.LENGTH_SHORT).show();
-                        loadDateMore(currentPage);
+            if (recyclerView.getAdapter() == null) { // 如果没有设置adapter 则设置
+                recyclerView.setAdapter(topicListAdapter);
+                recyclerView.addOnScrollListener(new FocusResizeScrollListener<>(topicListAdapter, linearLayoutManager));
+                recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+                    @Override
+                    public synchronized void onLoadMore(int currentPage) {
+                        if (!isLoadMore) { // false 不是加载状态 才进行加载
+                            isLoadMore = true;
+                            Toast.makeText(getContext(), "加载完毕！", Toast.LENGTH_SHORT).show();
+                            loadDateMore(currentPage, mHobbyid); //　mHobbyid当前兴趣id
+                        }
                     }
-                }
-            });
+                });
+            } else { //如果已有adapter 则替换
+                recyclerView.swapAdapter(topicListAdapter, true);
+            }
         }
     }
 
-    private synchronized void loadDateMore(int currentPage) {
+    private synchronized void loadDateMore(int currentPage, Integer mHobbyid) {
         final String url = GlobalValue.BASE_URL + "/topic/list/alltopic";
-        Log.i(TAG, "currentPage: " + currentPage);
+//        Log.i(TAG, "currentPage: " + currentPage);
 
         RequestParams params = new RequestParams();
         params.addQueryStringParameter("page", String.valueOf(currentPage));
+        params.addQueryStringParameter("hobby_id", String.valueOf(mHobbyid));
         params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
         HttpUtils http = new HttpUtils();
@@ -154,10 +189,6 @@ public class InterestCircleFragment extends BaseFragment {
                         Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                         List<TbTopic> topics = gson.fromJson(responseInfo.result, new TypeToken<List<TbTopic>>() {
                         }.getType());
-                        Log.i(TAG, "加载更多 resutl: " + mTopicList);
-                        Log.i(TAG, "加载更多 topics: " + mTopicList.toString());
-                        Log.i(TAG, "加载更多 topic: " + mTopicList.get(0).toString());
-                        Log.i(TAG, "加载更多 topic.size: " + mTopicList.size());
                         topicListAdapter.addItems(topics);
                         dialog.dismiss();
                         isLoadMore = false; // 加载完毕 才设为true

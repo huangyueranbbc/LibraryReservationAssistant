@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/LibraryReservationAssistant.iml" filepath="$PROJECT_DIR$/LibraryReservationAssistant.iml" />
       <module fileurl="file://$PROJECT_DIR$/ViewPagerIndicator/ViewPagerIndicator.iml" filepath="$PROJECT_DIR$/ViewPagerIndicator/ViewPagerIndicator.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/boommenu/boommenu.iml" filepath="$PROJECT_DIR$/boommenu/boommenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/focusresize/focusresize.iml" filepath="$PROJECT_DIR$/focusresize/focusresize.iml" />
       <module fileurl="file://$PROJECT_DIR$/infinitecycleviewpager/infinitecycleviewpager.iml" filepath="$PROJECT_DIR$/infinitecycleviewpager/infinitecycleviewpager.iml" />
       <module fileurl="file://$PROJECT_DIR$/pager-bottom-tab-strip/pager-bottom-tab-strip.iml" filepath="$PROJECT_DIR$/pager-bottom-tab-strip/pager-bottom-tab-strip.iml" />
