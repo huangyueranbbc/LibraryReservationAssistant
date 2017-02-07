@@ -47,4 +47,18 @@
     <string name="text_ham_button_sub_text_normal">Ham Button Sub Text(Normal)</string>
     <string name="text_ham_button_sub_text_highlighted">Ham Button Sub Text(Highlighted)</string>
     <string name="text_ham_button_sub_text_unable">Ham Button Sub Text(Unable)</string>
+
+    <!-- 发表主题 选择兴趣圈 -->
+    <string name="promt_year">选择兴趣圈</string>
+
+    <string-array name="years">
+        <item>文</item>
+        <item>理</item>
+        <item>医</item>
+        <item>军事</item>
+        <item>哲</item>
+        <item>经济</item>
+        <item>教育</item>
+        <item>管理</item>
+    </string-array>
 </resources>

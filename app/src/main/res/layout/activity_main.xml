@@ -45,7 +45,9 @@
                 android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/tab" />
+                android:layout_above="@+id/tab">
+
+            </FrameLayout>
 
             <me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout
                 android:id="@+id/tab"

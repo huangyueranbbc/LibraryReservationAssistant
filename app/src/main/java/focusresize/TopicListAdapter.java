@@ -21,7 +21,8 @@ import university.huangyueran.polytechnic.com.libraryreservationassistant.domain
 /**
  * Created by borjabravo on 11/6/16.
  */
-public class TopicListAdapter extends FocusResizeAdapter<RecyclerView.ViewHolder> {
+public class TopicListAdapter extends FocusResizeAdapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+    private static final String TAG = "TopicListAdapter";
 
     public static final int OFFSET_TEXT_SIZE = 4;
     public static final float OFFSET_TEXT_ALPHA = 100f;
@@ -50,14 +51,16 @@ public class TopicListAdapter extends FocusResizeAdapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateFooterViewHolder(ViewGroup parent, final int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_topic, parent, false);
+        v.setOnClickListener(this);
         return new CustomViewHolder(v);
     }
 
     @Override
     public void onBindFooterViewHolder(RecyclerView.ViewHolder holder, int position) {
         TbTopic topic = items.get(position);
+        holder.itemView.setTag(items.get(position));
         fill((CustomViewHolder) holder, topic);
     }
 
@@ -180,6 +183,24 @@ public class TopicListAdapter extends FocusResizeAdapter<RecyclerView.ViewHolder
             tvContent = (TextView) v.findViewById(R.id.tv_content);
             // 图片
             topicImage = (ImageView) v.findViewById(R.id.topic_image);
+        }
+    }
+
+    private OnRecyclerViewItemClickListener mOnItemClickListener = null;
+
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+        this.mOnItemClickListener = listener;
+    }
+
+    public static interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view, TbTopic data);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mOnItemClickListener != null) {
+            //注意这里使用getTag方法获取数据
+            mOnItemClickListener.onItemClick(v,(TbTopic) v.getTag());
         }
     }
 }

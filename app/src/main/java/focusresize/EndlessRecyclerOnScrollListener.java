@@ -40,7 +40,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             }
         }
         if (!loading
-                && (totalItemCount - visibleItemCount) <= firstVisibleItem) {
+                && (totalItemCount - visibleItemCount-10) <= firstVisibleItem) {
             currentPage++;
             onLoadMore(currentPage);
             loading = true;

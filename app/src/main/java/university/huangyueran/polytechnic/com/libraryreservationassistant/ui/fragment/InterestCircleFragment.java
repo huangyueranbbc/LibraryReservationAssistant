@@ -1,6 +1,7 @@
 package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
+import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomButtons.TextInsideCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.ButtonEnum;
@@ -40,6 +42,8 @@ import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbTopic;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.global.GlobalValue;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.manager.BuilderManager;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.activity.CommentActivity;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.activity.PostTopicActivity;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.TimestampTypeAdapter;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.UIUtils;
 
@@ -85,11 +89,28 @@ public class InterestCircleFragment extends BaseFragment {
                     topicListAdapter = null;
 //                    topicListAdapter=new
                     // 重新从网络加载数据
-                    loadDate(index);
+                    mHobbyid = index;
+                    loadDate(mHobbyid);
                 }
             });
             bmb1.addBuilder(textInsideCircleButtonBuilder);
         }
+
+        BoomMenuButton bmb4 = (BoomMenuButton) view.findViewById(R.id.bmb4);
+        bmb4.bringToFront(); // 放到最上层 不被遮挡
+        bmb4.setButtonEnum(ButtonEnum.SimpleCircle);
+        SimpleCircleButton.Builder addTopicBtn = new SimpleCircleButton.Builder();
+        addTopicBtn.normalColorRes(R.color.colorAccent);
+        addTopicBtn.normalImageRes(R.drawable.ic_add_white_24dp);
+        addTopicBtn.listener(new OnBMClickListener() { // 发表主题点击事件
+            @Override
+            public void onBoomButtonClick(int index) {
+                Intent intent = new Intent();
+                intent.setClass(getContext(), PostTopicActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+        bmb4.addBuilder(addTopicBtn);
 
         loadDate(mHobbyid); // 默认加载综合
 
@@ -146,11 +167,40 @@ public class InterestCircleFragment extends BaseFragment {
 //        customAdapter.addItems(addItems());
         topicListAdapter = new TopicListAdapter(getContext(), (int) getContext().getResources().getDimension(R.dimen.custom_item_height));
         topicListAdapter.addItems(mTopicList);
+        // 详情页跳转点击事件
+        topicListAdapter.setOnItemClickListener(new TopicListAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, TbTopic data) {
+                Log.i(TAG, "onItemClick: " + data);
+                Intent intent = new Intent(getContext(), CommentActivity.class);
+                // 附带参数 data-topic
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("topicInfo", data); //主题数据
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         if (recyclerView != null) {
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setHasFixedSize(true);
+
             if (recyclerView.getAdapter() == null) { // 如果没有设置adapter 则设置
                 recyclerView.setAdapter(topicListAdapter);
+                recyclerView.addOnScrollListener(new FocusResizeScrollListener<>(topicListAdapter, linearLayoutManager));
+                recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+                    @Override
+                    public synchronized void onLoadMore(int currentPage) {
+                        if (!isLoadMore) { // false 不是加载状态 才进行加载
+                            isLoadMore = true;
+//                            Toast.makeText(getContext(), "加载完毕！", Toast.LENGTH_SHORT).show();
+                            loadDateMore(currentPage, mHobbyid); //　mHobbyid当前兴趣id
+                        }
+                    }
+                });
+            } else { //如果已有adapter 则替换
+                recyclerView.removeAllViews();
+                recyclerView.swapAdapter(topicListAdapter, true);
+                recyclerView.clearOnScrollListeners();
                 recyclerView.addOnScrollListener(new FocusResizeScrollListener<>(topicListAdapter, linearLayoutManager));
                 recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
                     @Override
@@ -162,8 +212,6 @@ public class InterestCircleFragment extends BaseFragment {
                         }
                     }
                 });
-            } else { //如果已有adapter 则替换
-                recyclerView.swapAdapter(topicListAdapter, true);
             }
         }
     }
@@ -223,6 +271,14 @@ public class InterestCircleFragment extends BaseFragment {
             items.add(object);
         }
         return items;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, "onActivityResult: 被执行了!!");
+        // 刷新数据
+        loadDate(0);
     }
 
 }

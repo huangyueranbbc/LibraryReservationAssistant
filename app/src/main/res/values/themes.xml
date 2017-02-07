@@ -20,5 +20,4 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/windowBackground</item>
     </style>
-
 </resources>

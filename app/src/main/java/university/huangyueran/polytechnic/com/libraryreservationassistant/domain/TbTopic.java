@@ -143,4 +143,24 @@ public class TbTopic implements Serializable {
     public void setTopicPic(String topicPic) {
         this.topicPic = topicPic == null ? null : topicPic.trim();
     }
+
+    @Override
+    public String toString() {
+        return "TbTopic{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", authorId=" + authorId +
+                ", authorName='" + authorName + '\'' +
+                ", laudCount=" + laudCount +
+                ", replyCount=" + replyCount +
+                ", lastreplyId=" + lastreplyId +
+                ", ipaddr='" + ipaddr + '\'' +
+                ", isdel=" + isdel +
+                ", hobbyId=" + hobbyId +
+                ", hobbyName='" + hobbyName + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", topicPic='" + topicPic + '\'' +
+                '}';
+    }
 }

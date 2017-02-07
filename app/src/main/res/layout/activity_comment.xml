@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EEEEEE"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/lv_post"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/height_edittext" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_edittext"
+            android:layout_gravity="bottom"
+            android:background="@color/colorWhite"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <ImageButton
+                android:id="@+id/im_btn"
+                android:layout_width="@dimen/height_edittext"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_item_topic_selector"
+                android:src="@drawable/ic_tag_faces_indigo_a700_24dp" />
+
+            <EditText
+                android:id="@+id/et_reply"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/edittext_shape"
+                android:hint="我也说一句..."
+                android:padding="8dp"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="@dimen/textsize_body" />
+
+            <ImageButton
+                android:id="@+id/im_send"
+                android:layout_width="@dimen/height_edittext"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_item_topic_selector"
+                android:src="@drawable/ic_send_black_24dp" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
