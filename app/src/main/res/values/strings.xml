@@ -61,4 +61,18 @@
         <item>教育</item>
         <item>管理</item>
     </string-array>
+
+    <!-- 文件分享 三个viewpager -->
+    <string-array name="tabs_file_share">
+        <item>首页</item>
+        <item>分类</item>
+        <item>热门</item>
+    </string-array>
+
+    <!-- 文件分享 上传功能 -->
+    <string name="upload_title">上传附件</string>
+    <string name="upload_begin">上传</string>
+    <string name="look_pictrue">浏览</string>
+    <string name="file_upload">文件上传：</string>
+    <string name="cancel_back">返回</string>
 </resources>

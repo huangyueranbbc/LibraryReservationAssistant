@@ -29,8 +29,8 @@ public class FragmentFactory {
                 case 3:
                     fragment = new InterestCircleFragment();
                     break;
-                case 4:
-                    fragment = new AFragment();
+                case 4: // 文件分享模块
+                    fragment = new FileShareFragment();
                     break;
                 default:
                     break;

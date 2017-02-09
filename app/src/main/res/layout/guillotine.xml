@@ -17,7 +17,7 @@
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
-        android:id="@+id/profile_group"
+        android:id="@+id/ll_userinfo"
         style="@style/LinearLayout.GuillotineItem"
         android:layout_marginTop="@dimen/guillotine_medium_margin">
 
@@ -27,11 +27,11 @@
 
         <university.huangyueran.polytechnic.com.libraryreservationassistant.ui.widget.CanaroTextView
             style="@style/TextView.GuillotineItem"
-            android:text="@string/profile" />
+            android:text="用户信息" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/feed_group"
+        android:id="@+id/ll_changePwd"
         style="@style/LinearLayout.GuillotineItem">
 
         <ImageView
@@ -40,11 +40,11 @@
 
         <university.huangyueran.polytechnic.com.libraryreservationassistant.ui.widget.CanaroTextView
             style="@style/TextView.GuillotineItem"
-            android:text="@string/feed" />
+            android:text="修改密码" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/activity_group"
+        android:id="@+id/ll_share"
         style="@style/LinearLayout.GuillotineItem">
 
         <ImageView
@@ -52,8 +52,8 @@
             android:src="@drawable/ic_activity_active" />
 
         <university.huangyueran.polytechnic.com.libraryreservationassistant.ui.widget.CanaroTextView
-            style="@style/TextView.GuillotineItem.Selected"
-            android:text="@string/activity" />
+            style="@style/TextView.GuillotineItem"
+            android:text="知识分享" />
     </LinearLayout>
 
     <View
@@ -61,7 +61,7 @@
         android:layout_height="@dimen/guillotine_divider_height" />
 
     <LinearLayout
-        android:id="@+id/settings_group"
+        android:id="@+id/ll_logout"
         style="@style/LinearLayout.GuillotineItem">
 
         <ImageView
@@ -70,6 +70,6 @@
 
         <university.huangyueran.polytechnic.com.libraryreservationassistant.ui.widget.CanaroTextView
             style="@style/TextView.GuillotineItem"
-            android:text="@string/settings" />
+            android:text="退出登录" />
     </LinearLayout>
 </LinearLayout>

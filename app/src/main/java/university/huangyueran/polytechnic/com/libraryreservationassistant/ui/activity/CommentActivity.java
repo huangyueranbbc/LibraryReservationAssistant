@@ -188,7 +188,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                         }.getType());
                                         if (lmsResult.getStatus() == 200) { // 成功
                                             Toast.makeText(CommentActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
-                                            // TODO 刷新本页数据
                                             loadDate();
                                             replyAdapter.notifyDataSetChanged(); // 刷新界面
                                             closeInputMethod(); //关闭输入法

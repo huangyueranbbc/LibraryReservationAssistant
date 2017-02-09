@@ -46,4 +46,5 @@
     <dimen name="textsize_display4">112sp</dimen>
     <dimen name="height_tab_bottom">56dp</dimen>
     <dimen name="height_edittext">48dp</dimen>
+
 </resources>

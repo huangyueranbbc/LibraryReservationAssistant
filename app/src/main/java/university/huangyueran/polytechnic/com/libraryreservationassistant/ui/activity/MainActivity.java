@@ -1,6 +1,7 @@
 package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -77,6 +79,10 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.content_hamburger)
     View contentHamburger;
     private List<TbLibrary> libraries;
+    private LinearLayout mLinearUserInfo;
+    private LinearLayout mLinearChangePwd;
+    private LinearLayout mLinearShare;
+    private LinearLayout mLinearLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +116,7 @@ public class MainActivity extends BaseActivity {
         }
 
         View guillotineMenu = LayoutInflater.from(this).inflate(R.layout.guillotine, null);
+        initGuiView(guillotineMenu); // 初始化侧边栏控件 并设置监听事件
         root.addView(guillotineMenu);
 
         new GuillotineAnimation.GuillotineBuilder(guillotineMenu, guillotineMenu.findViewById(R.id.guillotine_hamburger), contentHamburger)
@@ -123,6 +130,39 @@ public class MainActivity extends BaseActivity {
         initFragment();
 
         bottomTabTest();
+    }
+
+    private void initGuiView(View guillotineMenu) {
+        mLinearUserInfo = (LinearLayout) guillotineMenu.findViewById(R.id.ll_userinfo);// 用户退出
+        mLinearUserInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: 用户退出");
+            }
+        });
+        mLinearChangePwd = (LinearLayout) guillotineMenu.findViewById(R.id.ll_changePwd); // 修改密码
+        mLinearChangePwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: 修改密码");
+            }
+        });
+        mLinearShare = (LinearLayout) guillotineMenu.findViewById(R.id.ll_share); // 分享
+        mLinearShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { // 跳转到上传分享文件Activity
+                Intent intent = new Intent(MainActivity.this, FileUploadActivity.class);
+                startActivity(intent);
+            }
+        });
+        mLinearLogout = (LinearLayout) guillotineMenu.findViewById(R.id.ll_logout); // 退出登录
+        mLinearLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: 退出登录");
+            }
+        });
+
     }
 
     /**

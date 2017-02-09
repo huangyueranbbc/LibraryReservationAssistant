@@ -180,8 +180,6 @@ public class PostTopicActivity extends BaseActivity {
 
                                     }
 
-                                    Log.i(TAG, "PicUploadResult: " + uploadResult.toString());
-
                                     if ("0".equals(uploadResult.getError())) { // 上传成功 创建主题 都成功销毁此Activity并返回
                                         // 如果图片上传成功 继续创建主题
                                         String content = etContent.getText().toString(); // 主题内容
@@ -201,7 +199,6 @@ public class PostTopicActivity extends BaseActivity {
                                         topic.setTopicPic(uploadResult.getUrl());
                                         topic.setIpaddr(ServerUtils.getHostIP());
                                         topic.setIsdel(0);
-                                        Log.i(TAG, "topic: " + topic.toString());
 
                                         // 发送请求
                                         String topicJson = gson.toJson(topic);
@@ -220,7 +217,6 @@ public class PostTopicActivity extends BaseActivity {
 
                                                     @Override
                                                     public void onSuccess(ResponseInfo<String> responseInfo) {
-                                                        // 得到图书馆list集合
                                                         Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                                                         LMSResult lmsResult = gson.fromJson(responseInfo.result, new TypeToken<LMSResult>() {
                                                         }.getType());

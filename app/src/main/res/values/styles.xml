@@ -67,4 +67,5 @@
         <item name="android:windowExitAnimation">@anim/slide_out_from_bottom</item>
     </style>
 
+
 </resources>
