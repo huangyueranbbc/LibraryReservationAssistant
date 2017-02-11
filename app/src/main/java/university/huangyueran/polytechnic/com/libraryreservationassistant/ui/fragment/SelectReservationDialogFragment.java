@@ -51,6 +51,8 @@ public class SelectReservationDialogFragment extends SwipeAwayDialogFragment {
 
     private static FragmentManager mFragmentManager;
 
+    private static boolean isSelectRevSeatLoading = false; // 防止重复加载 false==不在加载中
+
     private interface DialogBuilder {
         @NonNull
         Dialog create(Context context, SelectReservationDialogFragment fragment, TbReservation readrooms);
@@ -84,46 +86,52 @@ public class SelectReservationDialogFragment extends SwipeAwayDialogFragment {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(final DialogInterface dialog, int which) {
-                                final ProgressDialog dialogProgress = new ProgressDialog(context);
-                                // 请求网络服务 提前离开
-                                String url = GlobalValue.BASE_URL + "/reservation/leave";
-                                RequestParams params = new RequestParams();
-                                params.addQueryStringParameter("user_id", String.valueOf(reservation.getUserId()));
-                                params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
-                                HttpUtils http = new HttpUtils();
-                                http.send(HttpRequest.HttpMethod.GET,
-                                        url, params,
-                                        new RequestCallBack<String>() {
+                                if (!isSelectRevSeatLoading) {
+                                    isSelectRevSeatLoading = true;
+                                    final ProgressDialog dialogProgress = new ProgressDialog(context);
+                                    // 请求网络服务 提前离开
+                                    String url = GlobalValue.BASE_URL + "/reservation/leave";
+                                    RequestParams params = new RequestParams();
+                                    params.addQueryStringParameter("user_id", String.valueOf(reservation.getUserId()));
+                                    params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
+                                    HttpUtils http = new HttpUtils();
+                                    http.send(HttpRequest.HttpMethod.GET,
+                                            url, params,
+                                            new RequestCallBack<String>() {
 
-                                            @Override
-                                            public void onSuccess(ResponseInfo<String> responseInfo) {
-                                                Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                                                LMSResult result = gson.fromJson(responseInfo.result, new TypeToken<LMSResult>() {
-                                                }.getType());
-                                                Log.i("yjyy", "onSuccess: " + result.getStatus());
-                                                if (result.getStatus() == 200) { // 成功
-                                                    SelectReservationDialogFragment.newInstance(Type.LEAVESUCCESS, null).show(mFragmentManager, "取消成功");
-                                                } else if (result.getStatus() == 402) { // 没有预订记录
-                                                    SelectReservationDialogFragment.newInstance(Type.NORESERVATIONRECORD, null).show(mFragmentManager, "没有预约记录");
-                                                } else { // 服务错误
-                                                    SelectReservationDialogFragment.newInstance(Type.SERVERERROR, null).show(mFragmentManager, "服务错误");
+                                                @Override
+                                                public void onSuccess(ResponseInfo<String> responseInfo) {
+                                                    Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                                                    LMSResult result = gson.fromJson(responseInfo.result, new TypeToken<LMSResult>() {
+                                                    }.getType());
+                                                    Log.i("yjyy", "onSuccess: " + result.getStatus());
+                                                    if (result.getStatus() == 200) { // 成功
+                                                        SelectReservationDialogFragment.newInstance(Type.LEAVESUCCESS, null).show(mFragmentManager, "取消成功");
+                                                    } else if (result.getStatus() == 402) { // 没有预订记录
+                                                        SelectReservationDialogFragment.newInstance(Type.NORESERVATIONRECORD, null).show(mFragmentManager, "没有预约记录");
+                                                    } else { // 服务错误
+                                                        SelectReservationDialogFragment.newInstance(Type.SERVERERROR, null).show(mFragmentManager, "服务错误");
+                                                    }
+                                                    dialogProgress.dismiss();
+                                                    isSelectRevSeatLoading = false;
                                                 }
-                                                dialogProgress.dismiss();
-                                            }
 
-                                            @Override
-                                            public void onFailure(HttpException e, String s) {
-                                                Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
-                                                dialogProgress.dismiss();
-                                            }
+                                                @Override
+                                                public void onFailure(HttpException e, String s) {
+                                                    Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
+                                                    dialogProgress.dismiss();
+                                                    isSelectRevSeatLoading = false;
+                                                }
 
-                                            @Override
-                                            public void onLoading(long total, long current, boolean isUploading) {
-                                                super.onLoading(total, current, isUploading);
-                                                dialogProgress.setTitle("正在加载中");
-                                                dialogProgress.show();
-                                            }
-                                        });
+                                                @Override
+                                                public void onLoading(long total, long current, boolean isUploading) {
+                                                    super.onLoading(total, current, isUploading);
+                                                    dialogProgress.setTitle("正在加载中");
+                                                    dialogProgress.show();
+                                                }
+                                            });
+                                }
+
                             }
                         })
                         .setNegativeButton("取消", null)

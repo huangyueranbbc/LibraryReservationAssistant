@@ -40,6 +40,8 @@ import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.
 public class HorizontalPagerAdapter extends PagerAdapter {
     private static final String TAG = "HorizontalPagerAdapter";
 
+    private boolean isLoading = false; // 防止重复加载 false==不在加载中
+
     private static HashMap<Integer, PagerAdapter> verticalPagerAdapterMap = new HashMap<Integer, PagerAdapter>();
 
     private final Utils.LibraryObject[] LIBRARIES = new Utils.LibraryObject[]{

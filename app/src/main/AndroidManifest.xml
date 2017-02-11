@@ -161,9 +161,18 @@
             android:value="9c421fbea6c53438ef755ab1" />
         <!-- </>值来自开发者平台取得的AppKey -->
         <activity android:name=".ui.activity.PostTopicActivity" />
-        <activity android:name=".ui.activity.CommentActivity" />
+        <activity
+            android:name=".ui.activity.CommentActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".ui.activity.FileUploadActivity" />
-        <activity android:name=".ui.activity.FileSelectActivity"></activity>
+        <activity android:name=".ui.activity.FileSelectActivity" />
+        <activity
+            android:name=".ui.activity.FileSharedetailActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity android:name=".ui.activity.SearchActivity" />
+        <activity
+            android:name=".ui.activity.SearchResultActivity"
+            android:theme="@style/Theme.AppCompat.Light"></activity>
     </application>
 
 </manifest>

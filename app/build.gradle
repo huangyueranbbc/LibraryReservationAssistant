@@ -97,4 +97,5 @@ dependencies {
     compile files('libs/fluent-hc-4.2.2.jar')
     compile files('libs/httpclient-cache-4.2.2.jar')
     compile files('libs/httpmime-4.1.1.jar')
+    compile project(':searchmlist')
 }

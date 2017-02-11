@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/pager-bottom-tab-strip/pager-bottom-tab-strip.iml" filepath="$PROJECT_DIR$/pager-bottom-tab-strip/pager-bottom-tab-strip.iml" />
       <module fileurl="file://$PROJECT_DIR$/phoenixlibrary/phoenixlibrary.iml" filepath="$PROJECT_DIR$/phoenixlibrary/phoenixlibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/pullToRefresh/pullToRefresh.iml" filepath="$PROJECT_DIR$/pullToRefresh/pullToRefresh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/searchmlist/searchmlist.iml" filepath="$PROJECT_DIR$/searchmlist/searchmlist.iml" />
       <module fileurl="file://$PROJECT_DIR$/selfslidemenulibrary/selfslidemenulibrary.iml" filepath="$PROJECT_DIR$/selfslidemenulibrary/selfslidemenulibrary.iml" />
     </modules>
   </component>

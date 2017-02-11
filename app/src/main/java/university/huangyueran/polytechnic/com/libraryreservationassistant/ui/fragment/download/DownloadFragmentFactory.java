@@ -2,6 +2,8 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.fr
 
 import java.util.HashMap;
 
+import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.fragment.HotFragment;
+
 /**
  * Created by huangyueran on 2017/1/13.
  * 生产Fragment的工厂
@@ -20,10 +22,7 @@ public class DownloadFragmentFactory {
                     fragment = new HomeFragment();
                     break;
                 case 1:
-                    fragment = new BFragment();
-                    break;
-                case 2:
-                    fragment = new BFragment();
+                    fragment = new HotFragment();
                     break;
                 default:
                     break;

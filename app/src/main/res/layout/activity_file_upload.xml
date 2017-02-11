@@ -73,7 +73,7 @@
                 android:gravity="top|left"
                 android:hint="请输入标题"
                 android:lines="1"
-                android:maxLength="50"
+                android:maxLength="12"
                 android:padding="15dp"
                 android:textColor="#000"
                 android:textSize="15sp" />

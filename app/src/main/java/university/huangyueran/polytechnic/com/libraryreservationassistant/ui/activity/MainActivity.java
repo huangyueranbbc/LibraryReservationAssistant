@@ -102,7 +102,6 @@ public class MainActivity extends BaseActivity {
                 requestPermissions(permissions.toArray(new String[permissions.size()]), 1);
             }
         }
-
         loadData(); // 加载应用初始化必备数据 避免加载UI卡住
 
         // TODO === 设置登录用户的静态数据 后期改为登录获取 ===
@@ -295,6 +294,12 @@ public class MainActivity extends BaseActivity {
                 transaction.add(R.id.frameLayout, FragmentFactory.createFragment(index));
                 mFragmentMap.put(index, index);
             }
+            if (index == 4) {
+                FragmentFactory.createFragment(index).setHasOptionsMenu(true);
+            } else {
+                FragmentFactory.createFragment(index).setHasOptionsMenu(false);
+            }
+
             Log.i("asd", "onSelected:" + index + "   TAG: " + tag.toString());
 //            transaction.replace(R.id.frameLayout, FragmentFactory.createFragment(index));
 //            transaction.commit();
@@ -307,6 +312,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onRepeatClick(int index, Object tag) {
             Log.i("asd", "onRepeatClick:" + index + "   TAG: " + tag.toString());
+            // 带返回结果跳转到搜索Activity
         }
     };
 

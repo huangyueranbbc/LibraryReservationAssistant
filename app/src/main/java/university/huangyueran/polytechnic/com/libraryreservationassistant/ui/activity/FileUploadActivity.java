@@ -162,20 +162,46 @@ public class FileUploadActivity extends Activity implements OnClickListener {
                 && data != null) {
             filePath = data.getStringExtra("path");
             String endfix = filePath.substring(filePath.lastIndexOf(".") + 1); // 文件后缀名
+
             System.out.println("后缀名:" + endfix);
-            if ("txt".equals(endfix.toLowerCase())) { // 1
+            switch (endfix.toLowerCase()) {
+                case "bmp": // 1
+                    break;
+                case "doc": // 2
+                    break;
+                case "docx":// 3
+                    break;
+                case "gif":// 4
+                    break;
+                case "java":// 5
+                    break;
+                case "jpg":// 6
+                    break;
+                case "pdf":// 7
+                    break;
+                case "png":// 8
+                    break;
+                case "ppt":// 9
+                    break;
+                case "pptx":// 10
+                    break;
+                case "rar":// 11
+                    break;
+                case "rft":// 12
+                    break;
+                case "txt":// 13
+                    break;
+                case "xls":// 14
+                    break;
+                case "xlsx":// 15
+                    break;
+                case "zip":// 16
+                    break;
 
-            } else if ("pdf".equals(endfix.toLowerCase())) { //2
-
-            } else if ("doc".equals(endfix.toLowerCase()) || "docx".equals(endfix.toLowerCase())) { // 3
-
-            } else if ("xlsx".equals(endfix.toLowerCase()) || "xls".equals(endfix.toLowerCase())) { //4
-
-            } else if ("ppt".equals(endfix.toLowerCase())) { //5
-
-            } else {
-                filePath = "";
-                Toast.makeText(this, "不支持的上传类型", Toast.LENGTH_SHORT).show();
+                default:
+                    filePath = "";
+                    Toast.makeText(this, "不支持的上传类型", Toast.LENGTH_SHORT).show();
+                    break;
             }
             pathView.setText(filePath);
         }

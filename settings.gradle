@@ -1,1 +1,1 @@
-include ':app', ':pager-bottom-tab-strip', ':ViewPagerIndicator', ':selfslidemenulibrary', ':infinitecycleviewpager', ':phoenixlibrary', ':focusresize', ':pullToRefresh', ':boommenu'
+include ':app', ':pager-bottom-tab-strip', ':ViewPagerIndicator', ':selfslidemenulibrary', ':infinitecycleviewpager', ':phoenixlibrary', ':focusresize', ':pullToRefresh', ':boommenu', ':searchmlist'

@@ -52,11 +52,11 @@
     <string name="promt_year">选择兴趣圈</string>
 
     <string-array name="years">
-        <item>文</item>
-        <item>理</item>
-        <item>医</item>
+        <item>文学</item>
+        <item>理学</item>
+        <item>医学</item>
         <item>军事</item>
-        <item>哲</item>
+        <item>哲学</item>
         <item>经济</item>
         <item>教育</item>
         <item>管理</item>
@@ -65,7 +65,6 @@
     <!-- 文件分享 三个viewpager -->
     <string-array name="tabs_file_share">
         <item>首页</item>
-        <item>分类</item>
         <item>热门</item>
     </string-array>
 
@@ -75,4 +74,7 @@
     <string name="look_pictrue">浏览</string>
     <string name="file_upload">文件上传：</string>
     <string name="cancel_back">返回</string>
+
+    <!-- 搜索框 -->
+    <string name="menu_search">Search</string>
 </resources>

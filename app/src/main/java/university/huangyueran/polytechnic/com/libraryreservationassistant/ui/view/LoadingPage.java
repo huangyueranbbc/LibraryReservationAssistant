@@ -120,25 +120,6 @@ public abstract class LoadingPage extends FrameLayout {
         if (mCurrentState != STATE_LOADING) { // 如果当前没有加载，才开始加载数据
             mCurrentState = STATE_LOADING;
 
-//            new Thread() {
-//                @Override
-//                public void run() {
-//                    final ResultState resultState = onLoad();
-//                    //在主线程运行
-//                    UIUtils.runOnUIThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (resultState != null) {
-//                                mCurrentState = resultState.getState(); // 网络加载结束后，更新网络状态
-//                                //根据最新的状态来刷新页面
-//                                showRightPage();
-//                            }
-//                        }
-//                    });
-//
-//                }
-//            }.start();
-
             ThreadManager.getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {

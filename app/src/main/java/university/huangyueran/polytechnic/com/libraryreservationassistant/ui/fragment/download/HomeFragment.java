@@ -1,13 +1,20 @@
 package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.fragment.download;
 
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbFileShare;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.http.protocol.HomeProtocol;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.activity.FileSharedetailActivity;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.activity.SearchActivity;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.adapter.MyBaseAdapter;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.holder.BaseHolder;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.holder.HomeHolder;
@@ -19,12 +26,14 @@ import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.
  * Created by huangyueran on 2017/2/9.
  */
 public class HomeFragment extends BaseDownloadFragment {
+    private static final String TAG = "HomeFragment";
 
     private ArrayList<TbFileShare> data; // 加载到的网络数据
+    private ListView listView;
 
     @Override
     public View onCreateSuccessView() {
-        ListView listView = new MyListView(UIUtils.getContext());
+        listView = new MyListView(UIUtils.getContext());
 
         listView.setAdapter(new HomeAdapter(data));
 
@@ -34,16 +43,59 @@ public class HomeFragment extends BaseDownloadFragment {
                 TbFileShare appInfo = data.get(position);
 
                 if (appInfo != null) { // TODO 详情页展示
-//                    Intent intent = new Intent(UIUtils.getContext(), HomedetailActivity.class);
-//                    intent.putExtra("packageName", appInfo.getPackageName()); // 传递包名数据
-//                    startActivity(intent);
+                    Intent intent = new Intent(getContext(), FileSharedetailActivity.class);
+                    intent.putExtra("fileshareinfo", appInfo); // 传递包名数据
+                    startActivity(intent);
                 }
 
             }
         });
 
+        setHasOptionsMenu(true);
+
         return listView;
     }
+
+    /**
+     * 添加左侧 搜索菜单
+     *
+     * @param menu
+     * @param inflater
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.add("").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.getItem(0).setIcon(R.drawable.abs__ic_search);//替换图标
+    }
+
+    /**
+     * 左侧菜单点击事件
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO 带结果 跳转到搜索Activity 换回结果为搜索的数据
+        Intent intent = new Intent(getContext(), SearchActivity.class);
+        startActivity(intent);
+        return super.onOptionsItemSelected(item);
+    }
+
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (data != null && data.hasExtra("fileShares")) {
+//            ArrayList<TbFileShare> fileShares = (ArrayList<TbFileShare>) data.getSerializableExtra("fileShares");
+//            if (fileShares != null) {
+//                // 更新数据 刷新ListView
+//                this.data.clear();
+//                this.data = fileShares;
+//                listView.setAdapter(new HomeAdapter(fileShares));
+//            }
+//        }
+//
+//    }
 
     @Override
     public LoadingPage.ResultState onLoad() {
@@ -53,6 +105,7 @@ public class HomeFragment extends BaseDownloadFragment {
 
         return check(data); // 校验数据并返回状态
     }
+
 
     class HomeAdapter extends MyBaseAdapter<TbFileShare> {
 
@@ -85,4 +138,5 @@ public class HomeFragment extends BaseDownloadFragment {
         }
 
     }
+
 }

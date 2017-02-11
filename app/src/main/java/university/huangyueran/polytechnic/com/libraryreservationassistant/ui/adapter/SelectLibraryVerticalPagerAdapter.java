@@ -52,6 +52,8 @@ public class SelectLibraryVerticalPagerAdapter extends PagerAdapter {
     private ArrayList<TbReadroom> readrooms;
     private Context mContext;
 
+    private boolean isLoading = false; // 防止重复加载 false==不在加载中
+
     public SelectLibraryVerticalPagerAdapter(final Context context, Utils.LibraryObject[] two_way_libraries, ArrayList<TbLibrary> libraries, FragmentManager fragmentManager) {
         this.mContext = context;
         this.libraries = libraries;
@@ -87,65 +89,70 @@ public class SelectLibraryVerticalPagerAdapter extends PagerAdapter {
 
         llItem.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // TODO 创建选择阅览室的ListView
-                final Long library_id = libraries.get(showPosition).getId(); // 当前点击item的图书馆id
+            public synchronized void onClick(View v) {
+                if (!isLoading) {
+                    isLoading = true;
+                    // TODO 创建选择阅览室的ListView
+                    final Long library_id = libraries.get(showPosition).getId(); // 当前点击item的图书馆id
 
-                // 网络请求数据
-                final String url = GlobalValue.BASE_URL + "/readroom/list";
-                String cache = CacheUtils.getCache("readroom-list" + library_id);
+                    // 网络请求数据
+                    final String url = GlobalValue.BASE_URL + "/readroom/list";
+                    String cache = CacheUtils.getCache("readroom-list" + library_id);
 
-                if (!StringUtils.isEmpty(cache)) {
-                    Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                    readrooms = gson.fromJson(cache, new TypeToken<ArrayList<TbReadroom>>() {
-                    }.getType());
-                    // 创建弹出框 listview
-                    SelectReadRoomDialogFragment.newInstance(SelectReadRoomDialogFragment.Type.DEFAULT_LIST, readrooms).show(mFragmentManager, "list");
-                } else {
-                    // 缓存没有 去网络中取
-                    RequestParams params = new RequestParams();
-                    params.addQueryStringParameter("id", String.valueOf(library_id));
+                    if (!StringUtils.isEmpty(cache)) {
+                        Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        readrooms = gson.fromJson(cache, new TypeToken<ArrayList<TbReadroom>>() {
+                        }.getType());
+                        // 创建弹出框 listview
+                        SelectReadRoomDialogFragment.newInstance(SelectReadRoomDialogFragment.Type.DEFAULT_LIST, readrooms).show(mFragmentManager, "list");
+                        isLoading = false;
+                    } else {
+                        // 缓存没有 去网络中取
+                        RequestParams params = new RequestParams();
+                        params.addQueryStringParameter("id", String.valueOf(library_id));
 
-                    HttpUtils http = new HttpUtils();
-                    http.send(HttpRequest.HttpMethod.GET,
-                            url, params,
-                            new RequestCallBack<String>() {
-                                private ProgressDialog dialog = new ProgressDialog(mContext);
+                        HttpUtils http = new HttpUtils();
+                        http.send(HttpRequest.HttpMethod.GET,
+                                url, params,
+                                new RequestCallBack<String>() {
+                                    private ProgressDialog dialog = new ProgressDialog(mContext);
 
-                                @Override
-                                public void onSuccess(ResponseInfo<String> responseInfo) {
-                                    // 得到图书馆list集合
-                                    Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                                    readrooms = gson.fromJson(responseInfo.result, new TypeToken<ArrayList<TbReadroom>>() {
-                                    }.getType());
-                                    // 存入缓存
-                                    CacheUtils.setCache("readroom-list" + library_id, responseInfo.result);
+                                    @Override
+                                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                                        // 得到图书馆list集合
+                                        Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                                        readrooms = gson.fromJson(responseInfo.result, new TypeToken<ArrayList<TbReadroom>>() {
+                                        }.getType());
+                                        // 存入缓存
+                                        CacheUtils.setCache("readroom-list" + library_id, responseInfo.result);
 
-                                    dialog.dismiss();
-                                    // 创建弹出框 listview
-                                    SelectReadRoomDialogFragment.newInstance(SelectReadRoomDialogFragment.Type.DEFAULT_LIST, readrooms).show(mFragmentManager, "list");
-                                }
+                                        dialog.dismiss();
+                                        // 创建弹出框 listview
+                                        SelectReadRoomDialogFragment.newInstance(SelectReadRoomDialogFragment.Type.DEFAULT_LIST, readrooms).show(mFragmentManager, "list");
+                                        isLoading = false;
+                                    }
 
-                                @Override
-                                public void onFailure(HttpException e, String s) {
-                                    Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
-                                    dialog.dismiss();
-                                }
+                                    @Override
+                                    public void onFailure(HttpException e, String s) {
+                                        Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                        isLoading = false;
+                                    }
 
-                                @Override
-                                public void onStart() {
-                                    super.onStart();
-                                }
+                                    @Override
+                                    public void onStart() {
+                                        super.onStart();
+                                    }
 
-                                @Override
-                                public void onLoading(long total, long current, boolean isUploading) {
-                                    super.onLoading(total, current, isUploading);
-                                    dialog.setTitle("正在加载中");
-                                    dialog.show();
-                                }
-                            });
+                                    @Override
+                                    public void onLoading(long total, long current, boolean isUploading) {
+                                        super.onLoading(total, current, isUploading);
+                                        dialog.setTitle("正在加载中");
+                                        dialog.show();
+                                    }
+                                });
+                    }
                 }
-
             }
         });
 

@@ -2,6 +2,7 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.ad
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -43,6 +44,8 @@ public class YYManagerVerticalPagerAdapter extends PagerAdapter {
     FragmentManager mFragmentManager;
 
     Context mContext;
+
+    private static boolean isYYLoading = false; // 防止重复请求 false==不在请求状态中
 
     private final Utils.LibraryObject[] TWO_WAY_LIBRARIES = new Utils.LibraryObject[]{
             new Utils.LibraryObject(
@@ -93,7 +96,7 @@ public class YYManagerVerticalPagerAdapter extends PagerAdapter {
         // TODO 点击事件监听
         llItem.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public synchronized void onClick(View v) {
                 // 获取用户id
                 String userLoginJson = CacheUtils.getCacheNotiming(GlobalValue.LOGININFO);
                 Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -107,18 +110,68 @@ public class YYManagerVerticalPagerAdapter extends PagerAdapter {
                     case 0: // 我的预约
                         // 先从缓存中取
                         // String cache = CacheUtils.getCache(GlobalValue.RESERVATION_CACHE_INFO + user.getUserId());
-                        String cache = "";// 不读缓存
-                        if (!StringUtils.isEmpty(cache)) { // 缓存不为空 去缓存
-                            TbReservation reservation = gson.fromJson(cache, new TypeToken<TbReservation>() {
-                            }.getType());
-                            SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(mFragmentManager, "alert");
-                        } else { // 缓存为空 取网络中取
-                            // 网络请求数据
-                            final String url = GlobalValue.BASE_URL + "/reservation/show/used";
-                            RequestParams params = new RequestParams();
-                            params.addQueryStringParameter("id", String.valueOf(user.getUserId()));
-                            params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
+                        if (!isYYLoading) {
+                            isYYLoading = true;
+                            String cache = "";// 不读缓存
+                            if (!StringUtils.isEmpty(cache)) { // 缓存不为空 去缓存
+                                TbReservation reservation = gson.fromJson(cache, new TypeToken<TbReservation>() {
+                                }.getType());
+                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(mFragmentManager, "alert");
+                                SystemClock.sleep(500);
+                                isYYLoading = false;
+                            } else { // 缓存为空 取网络中取
+                                // 网络请求数据
+                                final String url = GlobalValue.BASE_URL + "/reservation/show/used";
+                                RequestParams params = new RequestParams();
+                                params.addQueryStringParameter("id", String.valueOf(user.getUserId()));
+                                params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
+                                HttpUtils http = new HttpUtils();
+                                http.send(HttpRequest.HttpMethod.GET,
+                                        url, params,
+                                        new RequestCallBack<String>() {
+
+                                            @Override
+                                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                                if (StringUtils.isEmpty(responseInfo.result)) {// 如果为Null 表示还没有预订记录
+                                                    SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.NOSEATRECORDINFO, null).show(mFragmentManager, "alert");
+                                                } else {
+                                                    Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                                                    TbReservation reservation = gson.fromJson(responseInfo.result, new TypeToken<TbReservation>() {
+                                                    }.getType());
+                                                    CacheUtils.setCache(GlobalValue.RESERVATION_CACHE_INFO + user.getUserId(), responseInfo.result, (long) (reservation.getTimeSpan() * 3600000));
+                                                    SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(mFragmentManager, "alert");
+                                                }
+                                                dialog.dismiss();
+                                                SystemClock.sleep(500);
+                                                isYYLoading = false;
+                                            }
+
+                                            @Override
+                                            public void onFailure(HttpException e, String s) {
+                                                Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
+                                                SystemClock.sleep(500);
+                                                isYYLoading = false;
+                                            }
+
+                                            @Override
+                                            public void onLoading(long total, long current, boolean isUploading) {
+                                                super.onLoading(total, current, isUploading);
+                                                dialog.setTitle("正在加载中");
+                                                dialog.show();
+                                            }
+                                        });
+                            }
+                        }
+                        break;
+                    case 1: //一键预约
+                        if (!isYYLoading) {
+                            isYYLoading = true;
+                            String url = GlobalValue.BASE_URL + "/reservation/random/create";
+                            RequestParams params = new RequestParams();
+                            params.addQueryStringParameter("user_id", String.valueOf(user.getUserId()));
+                            params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
                             HttpUtils http = new HttpUtils();
                             http.send(HttpRequest.HttpMethod.GET,
                                     url, params,
@@ -126,22 +179,29 @@ public class YYManagerVerticalPagerAdapter extends PagerAdapter {
 
                                         @Override
                                         public void onSuccess(ResponseInfo<String> responseInfo) {
-                                            if (StringUtils.isEmpty(responseInfo.result)) {// 如果为Null 表示还没有预订记录
-                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.NOSEATRECORDINFO, null).show(mFragmentManager, "alert");
+                                            Log.i("intent", "网络网络: ");
+                                            if (StringUtils.isEmpty(responseInfo.result)) { // 如果结果为空 图书馆作为已满
+                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.RANDOMCREATESEAT, null).show(mFragmentManager, "alert");
+                                                SystemClock.sleep(500);
+                                                isYYLoading = false;
                                             } else {
                                                 Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                                                 TbReservation reservation = gson.fromJson(responseInfo.result, new TypeToken<TbReservation>() {
                                                 }.getType());
-                                                CacheUtils.setCache(GlobalValue.RESERVATION_CACHE_INFO + user.getUserId(), responseInfo.result, (long) (reservation.getTimeSpan() * 3600000));
-                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(mFragmentManager, "alert");
+                                                // CacheUtils.setCache(GlobalValue.RESERVATION_CACHE_INFO + user.getUserId(), responseInfo.result, (long) (reservation.getTimeSpan() * 3600000));
+                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(mFragmentManager, "info");
                                             }
                                             dialog.dismiss();
+                                            SystemClock.sleep(500);
+                                            isYYLoading = false;
                                         }
 
                                         @Override
                                         public void onFailure(HttpException e, String s) {
                                             Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
                                             dialog.dismiss();
+                                            SystemClock.sleep(500);
+                                            isYYLoading = false;
                                         }
 
                                         @Override
@@ -152,50 +212,17 @@ public class YYManagerVerticalPagerAdapter extends PagerAdapter {
                                         }
                                     });
                         }
-                        break;
-                    case 1: //一键预约
-                        String url = GlobalValue.BASE_URL + "/reservation/random/create";
-                        RequestParams params = new RequestParams();
-                        params.addQueryStringParameter("user_id", String.valueOf(user.getUserId()));
-                        params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
-                        HttpUtils http = new HttpUtils();
-                        http.send(HttpRequest.HttpMethod.GET,
-                                url, params,
-                                new RequestCallBack<String>() {
 
-                                    @Override
-                                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                                        Log.i("intent", "网络网络: ");
-                                        if (StringUtils.isEmpty(responseInfo.result)) { // 如果结果为空 图书馆作为已满
-                                            SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.RANDOMCREATESEAT, null).show(mFragmentManager, "alert");
-                                        } else {
-                                            Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                                            TbReservation reservation = gson.fromJson(responseInfo.result, new TypeToken<TbReservation>() {
-                                            }.getType());
-                                            // CacheUtils.setCache(GlobalValue.RESERVATION_CACHE_INFO + user.getUserId(), responseInfo.result, (long) (reservation.getTimeSpan() * 3600000));
-                                            SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(mFragmentManager, "info");
-                                        }
-                                        dialog.dismiss();
-                                    }
-
-                                    @Override
-                                    public void onFailure(HttpException e, String s) {
-                                        Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss();
-                                    }
-
-                                    @Override
-                                    public void onLoading(long total, long current, boolean isUploading) {
-                                        super.onLoading(total, current, isUploading);
-                                        dialog.setTitle("正在加载中");
-                                        dialog.show();
-                                    }
-                                });
                         break;
                     case 2: // 提前离开
-                        TbReservation reservation = new TbReservation();
-                        reservation.setUserId(user.getUserId());
-                        SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.ISLEAVE, reservation, mFragmentManager).show(mFragmentManager, "info");
+                        if (!isYYLoading) {
+                            isYYLoading = true;
+                            TbReservation reservation = new TbReservation();
+                            reservation.setUserId(user.getUserId());
+                            SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.ISLEAVE, reservation, mFragmentManager).show(mFragmentManager, "info");
+                            SystemClock.sleep(400);
+                            isYYLoading = false;
+                        }
                         break;
                     default:
                         break;

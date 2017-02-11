@@ -46,6 +46,8 @@ public class SelectReadRoomDialogFragment extends SwipeAwayDialogFragment {
 
     private static List<TbReadroom> readrooms;
 
+    private static boolean isSelectSeatLoading = false; // 防止重复加载 false==不在加载中
+
     private interface DialogBuilder {
         @NonNull
         Dialog create(Context context, SelectReadRoomDialogFragment fragment, ArrayList<TbReadroom> readrooms);
@@ -114,58 +116,64 @@ public class SelectReadRoomDialogFragment extends SwipeAwayDialogFragment {
                 builder.setAdapter(readRoomAdapter, new DialogInterface.OnClickListener() {
 
                     @Override
-                    public void onClick(DialogInterface dialog, final int which) {
-                        // TODO 点击后，创建新的activity 显示座位预定界面
-                        // 网络获取数据 在成功后 跳转activity 携带数据 实时展示 不能写入缓存
-                        final String url = GlobalValue.BASE_URL + "/seat/list";
-                        Long readroom_id = readrooms.get(which).getId();
-                        RequestParams params = new RequestParams();
-                        params.addQueryStringParameter("id", String.valueOf(readroom_id));
-                        params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
+                    public synchronized void onClick(DialogInterface dialog, final int which) {
+                        if (!isSelectSeatLoading) {
+                            isSelectSeatLoading = true;
+                            // TODO 点击后，创建新的activity 显示座位预定界面
+                            // 网络获取数据 在成功后 跳转activity 携带数据 实时展示 不能写入缓存
+                            final String url = GlobalValue.BASE_URL + "/seat/list";
+                            Long readroom_id = readrooms.get(which).getId();
+                            RequestParams params = new RequestParams();
+                            params.addQueryStringParameter("id", String.valueOf(readroom_id));
+                            params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
-                        HttpUtils http = new HttpUtils();
-                        http.send(HttpRequest.HttpMethod.GET,
-                                url, params,
-                                new RequestCallBack<String>() {
-                                    private ProgressDialog dialog = new ProgressDialog(context);
+                            HttpUtils http = new HttpUtils();
+                            http.send(HttpRequest.HttpMethod.GET,
+                                    url, params,
+                                    new RequestCallBack<String>() {
+                                        private ProgressDialog dialog = new ProgressDialog(context);
 
-                                    @Override
-                                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                                        // 得到图书馆list集合
-                                        Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                                        ArrayList<TbSeat> seats = gson.fromJson(responseInfo.result, new TypeToken<ArrayList<TbSeat>>() {
-                                        }.getType());
+                                        @Override
+                                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                                            // 得到图书馆list集合
+                                            Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                                            ArrayList<TbSeat> seats = gson.fromJson(responseInfo.result, new TypeToken<ArrayList<TbSeat>>() {
+                                            }.getType());
 
-                                        dialog.dismiss();
-                                        // 跳转Activity
-                                        Intent intent = new Intent();
-                                        intent.setClass(context, SelectSeatActivity.class);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putSerializable("seats", seats); //座位数据
-                                        bundle.putSerializable("readroom", readrooms.get(which)); //阅览室数据
-                                        intent.putExtras(bundle);
-                                        context.startActivity(intent);
-                                    }
+                                            dialog.dismiss();
+                                            // 跳转Activity
+                                            Intent intent = new Intent();
+                                            intent.setClass(context, SelectSeatActivity.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putSerializable("seats", seats); //座位数据
+                                            bundle.putSerializable("readroom", readrooms.get(which)); //阅览室数据
+                                            intent.putExtras(bundle);
+                                            context.startActivity(intent);
+                                            isSelectSeatLoading = false;
+                                        }
 
-                                    @Override
-                                    public void onFailure(HttpException e, String s) {
-                                        Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss();
-                                    }
+                                        @Override
+                                        public void onFailure(HttpException e, String s) {
+                                            Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                            isSelectSeatLoading = false;
+                                        }
 
-                                    @Override
-                                    public void onStart() {
-                                        super.onStart();
-                                    }
+                                        @Override
+                                        public void onStart() {
+                                            super.onStart();
+                                        }
 
-                                    @Override
-                                    public void onLoading(long total, long current, boolean isUploading) {
-                                        super.onLoading(total, current, isUploading);
-                                        dialog.setTitle("正在加载中");
-                                        dialog.show();
-                                    }
-                                });
-                        // Toast.makeText(context, readrooms.get(which).toString(), Toast.LENGTH_SHORT).show();
+                                        @Override
+                                        public void onLoading(long total, long current, boolean isUploading) {
+                                            super.onLoading(total, current, isUploading);
+                                            dialog.setTitle("正在加载中");
+                                            dialog.show();
+                                        }
+                                    });
+                            // Toast.makeText(context, readrooms.get(which).toString(), Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
 

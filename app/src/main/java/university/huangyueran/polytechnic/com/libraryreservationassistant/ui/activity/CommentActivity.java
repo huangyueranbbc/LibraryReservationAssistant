@@ -3,7 +3,9 @@ package university.huangyueran.polytechnic.com.libraryreservationassistant.ui.ac
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -69,6 +71,40 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         initView(savedInstanceState);
         closeInputMethod(); // 关闭输入法
         loadDate(); // 加载评论数据
+
+        initActionBar();
+    }
+
+    /**
+     * 初始化actionBar
+     */
+    private void initActionBar() {
+        ActionBar actionbar = getSupportActionBar();
+        Log.i(TAG, "actionbar: " + actionbar);
+        actionbar.setTitle(topic.getHobbyName());
+        actionbar.setHomeButtonEnabled(true);// home处可以点击
+        actionbar.setDisplayHomeAsUpEnabled(true);// 显示左上角返回键,当和侧边栏结合时展示三个杠图片
+    }
+
+    /**
+     * 拦截返回键点击事件
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // 切换抽屉
+                finish();
+                break;
+
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -121,7 +157,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         // 发表时间
         TextView tvPosttime = (TextView) v.findViewById(R.id.tv_posttime);
         // 回复数
-        TextView tvReplys = (TextView) v.findViewById(R.id.tv_reply_count);
+        final TextView tvReplys = (TextView) v.findViewById(R.id.tv_reply_count);
         // 内容
         TextView tvContent = (TextView) v.findViewById(R.id.tv_content);
         // 图片
@@ -192,6 +228,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                             replyAdapter.notifyDataSetChanged(); // 刷新界面
                                             closeInputMethod(); //关闭输入法
                                             etReply.setText(""); // 清空编辑框数据
+                                            // 同时刷新主题 这里偷懒了~ 直接加一
+                                            int replyCounts = Integer.parseInt(tvReplys.getText().toString()) + 1;
+                                            tvReplys.setText(replyCounts + "");
                                         } else { // 失败
                                             Toast.makeText(CommentActivity.this, "服务异常 请重试...", Toast.LENGTH_SHORT).show();
                                         }

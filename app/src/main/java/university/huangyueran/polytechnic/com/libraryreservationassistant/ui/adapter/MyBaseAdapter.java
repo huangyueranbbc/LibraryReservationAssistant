@@ -224,4 +224,5 @@ public abstract class MyBaseAdapter<T> extends BaseAdapter {
     public int getListSize() {
         return data.size();
     }
+
 }

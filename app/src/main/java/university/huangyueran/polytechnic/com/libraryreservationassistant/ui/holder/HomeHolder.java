@@ -12,6 +12,7 @@ import com.lidroid.xutils.BitmapUtils;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.R;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.DownloadInfo;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.domain.TbFileShare;
+import university.huangyueran.polytechnic.com.libraryreservationassistant.global.GlobalValue;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.manager.DownloadManager;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.ui.view.ProgressArc;
 import university.huangyueran.polytechnic.com.libraryreservationassistant.utils.BitmapHelper;
@@ -90,8 +91,9 @@ public class HomeHolder extends BaseHolder<TbFileShare> implements DownloadManag
         tvDesc.setText(data.getFileDesc());
         rbStar.setRating(4);
 
-        // 根据文件类型 显示不同的图片
-        mBitmapUtils.display(ivIcon, "http://img.mukewang.com/5667d2e3000100f304720609-200-200.jpg");
+        String endfix = data.getRealName().substring(data.getRealName().lastIndexOf(".") + 1); // 文件后缀名
+        // TODO 根据文件类型 显示不同的图片
+        mBitmapUtils.display(ivIcon, GlobalValue.BASE_URL + "/img/ft_" + endfix + ".png");
 
         // 判断当前应用是否下载中
         DownloadInfo downloadInfo = mDownloadManager.getDownloadInfo(data);

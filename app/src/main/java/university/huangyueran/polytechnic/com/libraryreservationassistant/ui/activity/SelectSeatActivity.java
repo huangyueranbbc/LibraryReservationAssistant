@@ -66,6 +66,8 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
     private double distance;
     private LocationClient mLocClient;
 
+    private boolean isLoading = false; //防止重复请求 false==不在请求中
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,85 +185,93 @@ public class SelectSeatActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_tjzw:
-                if (mCurrentSeat != null) {
-                    // 判断是否在图书馆内
-                    // 在图书馆内
-                    if (library != null) {
-                        if (distance <= library.getRadius()) { // 如果小于半径,则在图书馆范围内
-                            String userLoginInfo = CacheUtils.getCacheNotiming(GlobalValue.LOGININFO);
-                            Log.i("userLoginInfo", "userLoginInfo: "+userLoginInfo);
-                            Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                            TbUser user = gson.fromJson(userLoginInfo, TbUser.class);
-                            final Long user_id = user.getUserId();
+                if (!isLoading) {
+                    isLoading = true;
+                    if (mCurrentSeat != null) {
+                        // 判断是否在图书馆内
+                        // 在图书馆内
+                        if (library != null) {
+                            if (distance <= library.getRadius()) { // 如果小于半径,则在图书馆范围内
+                                String userLoginInfo = CacheUtils.getCacheNotiming(GlobalValue.LOGININFO);
+                                Log.i("userLoginInfo", "userLoginInfo: " + userLoginInfo);
+                                Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                                TbUser user = gson.fromJson(userLoginInfo, TbUser.class);
+                                final Long user_id = user.getUserId();
 
-                            // 请求网络数据 订座
-                            final String url = GlobalValue.BASE_URL + "/reservation/create";
-                            RequestParams params = new RequestParams();
-                            params.addQueryStringParameter("user_id", String.valueOf(user_id));
-                            params.addQueryStringParameter("seat_id", mCurrentSeat.getId());
-                            params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
+                                // 请求网络数据 订座
+                                final String url = GlobalValue.BASE_URL + "/reservation/create";
+                                RequestParams params = new RequestParams();
+                                params.addQueryStringParameter("user_id", String.valueOf(user_id));
+                                params.addQueryStringParameter("seat_id", mCurrentSeat.getId());
+                                params.addQueryStringParameter("r", new Random().nextInt() + ""); // 防止重复提交
 
-                            HttpUtils http = new HttpUtils();
-                            http.send(HttpRequest.HttpMethod.GET,
-                                    url, params,
-                                    new RequestCallBack<String>() {
-                                        private ProgressDialog dialog = new ProgressDialog(SelectSeatActivity.this);
+                                HttpUtils http = new HttpUtils();
+                                http.send(HttpRequest.HttpMethod.GET,
+                                        url, params,
+                                        new RequestCallBack<String>() {
+                                            private ProgressDialog dialog = new ProgressDialog(SelectSeatActivity.this);
 
-                                        @Override
-                                        public void onSuccess(ResponseInfo<String> responseInfo) {
-                                            // 得到图书馆list集合
-                                            Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                                            LMSResult result = gson.fromJson(responseInfo.result, new TypeToken<LMSResult>() {
-                                            }.getType());
+                                            @Override
+                                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                                // 得到图书馆list集合
+                                                Gson gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                                                LMSResult result = gson.fromJson(responseInfo.result, new TypeToken<LMSResult>() {
+                                                }.getType());
 
-                                            if (result != null && result.getStatus() == 200) {// 创建成功
-                                                // 存入缓存
-                                                String json = gson.toJson(result.getData());
-                                                TbReservation reservation = gson.fromJson(json, TbReservation.class);
-                                                CacheUtils.setCache(GlobalValue.RESERVATION_CACHE_INFO + user_id, json, (long) (reservation.getTimeSpan() * 3600000));
-                                                // TODO 展示预订信息
-                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(getSupportFragmentManager(), "alert");
-                                                // 更新Activity
-                                                list_CH_seatInfo.get(mCurrentSeat.getPosition()).setStatus(2);
-                                                mSSView.invalidate();
-                                            } else if (result.getStatus() == 401) { //  已有预约记录
-                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CREATEHASRECORD, null).show(getSupportFragmentManager(), "已有预约记录");
-                                            } else { // 预约失败
-                                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CREATEERROR, null).show(getSupportFragmentManager(), "预约服务错误");
+                                                if (result != null && result.getStatus() == 200) {// 创建成功
+                                                    // 存入缓存
+                                                    String json = gson.toJson(result.getData());
+                                                    TbReservation reservation = gson.fromJson(json, TbReservation.class);
+                                                    CacheUtils.setCache(GlobalValue.RESERVATION_CACHE_INFO + user_id, json, (long) (reservation.getTimeSpan() * 3600000));
+                                                    // TODO 展示预订信息
+                                                    SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CUSTOM, reservation).show(getSupportFragmentManager(), "alert");
+                                                    // 更新Activity
+                                                    list_CH_seatInfo.get(mCurrentSeat.getPosition()).setStatus(2);
+                                                    mSSView.invalidate();
+                                                } else if (result.getStatus() == 401) { //  已有预约记录
+                                                    SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CREATEHASRECORD, null).show(getSupportFragmentManager(), "已有预约记录");
+                                                } else { // 预约失败
+                                                    SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.CREATEERROR, null).show(getSupportFragmentManager(), "预约服务错误");
+                                                }
+                                                dialog.dismiss();
+                                                isLoading = false;
+
                                             }
-                                            dialog.dismiss();
 
-                                        }
+                                            @Override
+                                            public void onFailure(HttpException e, String s) {
+                                                Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
+                                                isLoading = false;
+                                            }
 
-                                        @Override
-                                        public void onFailure(HttpException e, String s) {
-                                            Toast.makeText(UIUtils.getContext(), "数据加载失败", Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
-                                        }
+                                            @Override
+                                            public void onStart() {
+                                                super.onStart();
+                                            }
 
-                                        @Override
-                                        public void onStart() {
-                                            super.onStart();
-                                        }
-
-                                        @Override
-                                        public void onLoading(long total, long current, boolean isUploading) {
-                                            super.onLoading(total, current, isUploading);
-                                            dialog.setTitle("正在加载中");
-                                            dialog.show();
-                                        }
-                                    });
+                                            @Override
+                                            public void onLoading(long total, long current, boolean isUploading) {
+                                                super.onLoading(total, current, isUploading);
+                                                dialog.setTitle("正在加载中");
+                                                dialog.show();
+                                            }
+                                        });
+                            } else {
+                                // 不在图书馆内
+                                SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.DEFAULT, null).show(getSupportFragmentManager(), "alert");
+                                isLoading = false;
+                            }
                         } else {
                             // 不在图书馆内
                             SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.DEFAULT, null).show(getSupportFragmentManager(), "alert");
+                            isLoading = false;
                         }
                     } else {
-                        // 不在图书馆内
-                        SelectReservationDialogFragment.newInstance(SelectReservationDialogFragment.Type.DEFAULT, null).show(getSupportFragmentManager(), "alert");
+                        //  为选择座位 提示请选择座位
+                        SelectReadRoomDialogFragment.newInstance(SelectReadRoomDialogFragment.Type.DEFAULT, null).show(getSupportFragmentManager(), "alert");
+                        isLoading = false;
                     }
-                } else {
-                    //  为选择座位 提示请选择座位
-                    SelectReadRoomDialogFragment.newInstance(SelectReadRoomDialogFragment.Type.DEFAULT, null).show(getSupportFragmentManager(), "alert");
                 }
 
                 break;
